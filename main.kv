@@ -1,0 +1,61 @@
+<StandartBoxLayout>:
+	md_bg_color: self.theme_cls.surfaceContainerHighestColor 
+	radius: [15]				
+	orientation: "vertical"	
+
+<MainLayout>:   
+	MDScreen:			
+		md_bg_color: self.theme_cls.backgroundColor
+		 
+		MDBoxLayout:
+			id: root_box
+			orientation: "vertical"
+			padding: "10dp"
+			spacing: "10dp"
+			
+			StandartBoxLayout:
+				id: select_box
+				size_hint: 1, 0.2
+				spacing: (self.height * 0.05)
+				padding: [self.width * 0.03, self.height * 0.05, self.width * 0.03, self.height * 0.05]
+				EMSelector:
+					id: example_selector	
+					items_list: root.integrator.formulas			
+					#is_m_list: False				
+					on_select: root.handle_example_select(*args) 					
+
+				EMSelector:
+					id: method_selector
+					items_list: root.integrator.methods
+					#is_m_list: True
+					on_select: root.handle_method_select(*args) 
+				
+			
+					
+								
+			StandartBoxLayout:						
+				size_hint: 1, 0.4
+				ScrollView:
+					id: enter_box
+					size_hint: None, None 
+					size: self.parent.size							
+					do_scroll_x: False   
+					do_scroll_y: True 
+							
+							
+			StandartBoxLayout:	
+				id: result_box								
+				size_hint: 1, 0.2								
+
+				MDButton:					
+					on_release: app.switch_theme_style()
+					pos_hint: {"center_x": .5}
+				
+					MDButtonText:						
+						text: "Set theme"					 
+							
+			MDButton
+				style: "filled"
+				MDButtonText:
+					text:'Hello'
+		

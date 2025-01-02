@@ -1,0 +1,69 @@
+<ParameterText>:
+	mode: "filled"		
+	required: True	
+	pos_hint: {"center_x": 0.5, "center_y": 0.5}	
+	on_text: root.property_validate(self)	
+	on_size: self.calculate_font_size()	
+	
+	MDTextFieldHelperText:	
+		theme_font_size: "Custom"
+		font_size: "15sp"		
+		text: "Некоректні дані"	
+		mode: "persistent"	#!!!on_error mode changes the text color to black, when user changes app theme from Dark to Light, KiviMD problem
+		text_color_focus: [0, 0, 0, 0] 
+		text_color_normal:[0, 0, 0, 0] 
+
+<BaseLayout>:
+	size_hint_y: None
+	on_size: self.orientation_check()	
+	padding: ["30dp","20dp","30dp",0]	
+	
+	
+<CommonParams>:	
+	MDBoxLayout:
+		ParameterText:
+			id: a_text
+			MDTextFieldHintText:
+				text: "a"	
+
+	MDBoxLayout:
+		ParameterText:
+			id: b_text
+			MDTextFieldHintText:
+				text: "b"	
+<BesselParams>:		
+	MDBoxLayout:	
+		ParameterText:				
+			id: z_text				
+			MDTextFieldHintText:
+				text: "Аргумент z"			
+	MDBoxLayout:
+		ParameterText:
+			id: p_text
+			input_filter: 'int'
+			MDTextFieldHintText:
+				text: "Порядок ф-ії"	
+				
+<MidRectParams>:
+	MDBoxLayout:	
+		ParameterText:				
+			id: h_text
+			input_filter: 'int'
+			MDTextFieldHintText:
+				text: "Розбиття інтервалу" 	
+				
+<IParams>:
+	id:properties_layout		
+	orientation: "vertical"	
+	adaptive_height: True	
+		
+	CommonParams:
+		id:common_formula_properties
+	
+	BesselParams:
+		id:bessel_formula_properties
+
+	MidRectParams:
+		id:mid_rectangles_properties
+	
+		
