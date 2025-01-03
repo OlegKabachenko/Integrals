@@ -1,2 +1,2 @@
-from .integration import Integrator
-
+from .integral import Integral
+from .integrator import Integrator

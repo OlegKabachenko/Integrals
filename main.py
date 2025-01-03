@@ -49,7 +49,7 @@ class SMethodsApp(MDApp):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.app_config = Config()
-        self.bs_params =BesselParams()
+        self.bs_params = BesselParams()
  
     def switch_theme_style(self):            
         self.theme_cls.theme_style = (
