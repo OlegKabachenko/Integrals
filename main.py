@@ -13,9 +13,9 @@ from kivy.core.window import Window
 
 import math
 from config import Config
-from integration import Integrator
+from tools.integration import Integrator
 
-from uix.i_params import IParams
+from uix.i_params import *
 from uix.selector import EMSelector
 from kivy.properties import ObjectProperty
 
@@ -32,13 +32,14 @@ class MenuItem(Button):
 
 class MainLayout(MDBoxLayout):
     integrator = Integrator()
-        
+  
     def remove_child_widgets_except(self, container, widgets_to_keep):
         for widget in container.children[:]:  
             if not isinstance(widget, tuple(widgets_to_keep)): 
                 container.remove_widget(widget)
                 
     def handle_example_select(self, instance, s_id):
+     
         print("handle_example_select")
         
     def handle_method_select(self, instance, s_id):
@@ -48,7 +49,7 @@ class SMethodsApp(MDApp):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.app_config = Config()
-        self.i_params = IParams()
+        self.bs_params =BesselParams()
  
     def switch_theme_style(self):            
         self.theme_cls.theme_style = (
@@ -68,7 +69,7 @@ class SMethodsApp(MDApp):
         return MainLayout()
 
     def on_start(self):   
-        self.root.ids.enter_box.add_widget(self.i_params)        
+        self.root.ids.enter_box.add_widget(self.bs_params)        
        
       
      

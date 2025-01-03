@@ -1,4 +1,4 @@
-__all__ = ("Selectora")
+__all__ = ("EMSelector")
 
 import os
 from kivymd.app import MDApp
@@ -17,8 +17,6 @@ from kivy.clock import Clock
 import math
 
 from config import Config
-from integration import Integrator
-
 
 with open(
     os.path.join("uix", "selector", "selector.kv"), encoding="utf-8"
@@ -29,25 +27,23 @@ class EMSelector(MDBoxLayout):
     items_list = ListProperty()
     
     def __init__(self, **kwargs):       
-        super().__init__(**kwargs) 
+        super().__init__(**kwargs)
+      
         self.register_event_type('on_select')      
         Clock.schedule_once(self.init_label)#draw default text
 
     def init_label(self, *args):        
         self.ids.button.menu_callback(0, self.ids.field,  self.items_list[0])
                   
-    def event_dispatch(self, s_id):        
+    def event_dispatch(self, s_id):       
         event = 'on_select'
         self.dispatch(event, s_id)
    
     def on_select(self, s_id):
         pass             
 
-class SelectButton(MDFabButton):      
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)   
-        self.integrator = Integrator()
-             
+class SelectButton(MDFabButton):
+    
     def calculate_menu_item_font(self, menu_width, text):
         font_size = 16  
        

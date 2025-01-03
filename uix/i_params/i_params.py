@@ -1,4 +1,4 @@
-__all__ = ("IParams")
+__all__ = ("CommonParams", "BesselParams", "MidRectParams")
 
 import os
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -10,8 +10,6 @@ from config import Config
 from kivy.core.window import Window
 from sympy import Symbol, sympify
 from re import findall
-
-
 
 with open(
     os.path.join("uix", "i_params", "i_params.kv"), encoding="utf-8"
@@ -28,9 +26,7 @@ class ParameterText(MDTextField):
         p_height = Config.p_section_height       
       
         screen_width = Window.width
-        screen_height = Window.height
-
-       
+        screen_height = Window.height       
      
         if screen_width * Config.p_widg_wide_item_mult  > screen_height:
             multiplier = Config.p_font_wide_wid_mult
@@ -40,8 +36,7 @@ class ParameterText(MDTextField):
             chldr_cnt = max(len(self.parent.children), 1)
             self.font = math.floor(p_height * abs(p_width/chldr_cnt/(p_height*multiplier)))
                              
-        self.font_size = f"{self.font}sp"      
-       
+        self.font_size = f"{self.font}sp" 
     
     def check_balance(self, text)->bool:
         brackets = {')': '(', ']': '['}
@@ -101,7 +96,6 @@ class ParameterText(MDTextField):
         except Exception as e:               
             return self.set_error(item)
 
-
 class BaseLayout(MDBoxLayout):#Base layout for function parameters    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)        
@@ -120,8 +114,7 @@ class BaseLayout(MDBoxLayout):#Base layout for function parameters
         else:
             self.orientation = "vertical"
             self.height = len(self.children)*Config.p_section_height            
-            self.spacing = "20dp"
-        
+            self.spacing = "20dp"        
   
 class CommonParams(BaseLayout):#Common parameters (limits of integration)
     pass
@@ -132,11 +125,7 @@ class BesselParams(BaseLayout):#Bessel parameters  (order of the Bessel function
 class MidRectParams(BaseLayout):#Params for mid. rectangles method(integration interval partition number)
    pass
 
-class IParams(MDBoxLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs) 
-        self.height = Config.p_section_height
-        self.child_font = 16
+
 
   
             
