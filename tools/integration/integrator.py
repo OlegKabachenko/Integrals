@@ -4,6 +4,7 @@ from sympy import evalf
 from tools.integration import Integral
 
 class Integrator():  
+    
     def __init__(self):      
         self.methods = {
             "Метод середніх прямокутників": self.mid_rect_method,

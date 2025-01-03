@@ -32,8 +32,8 @@ class MenuItem(Button):
 
 class MainLayout(MDBoxLayout):   
     integrator = Integrator()
-    config = Config()   
-    
+    example_keys = list(Config.integral_examples.keys())    
+  
     def remove_child_widgets_except(self, container, widgets_to_keep):
         for widget in container.children[:]:  
             if not isinstance(widget, tuple(widgets_to_keep)): 
@@ -45,19 +45,18 @@ class MainLayout(MDBoxLayout):
     def handle_method_select(self, instance, s_id):
         print("handle_method_select")    
        
-class SMethodsApp(MDApp):   
+class SMethodsApp(MDApp):       
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.app_config = Config()
+        super().__init__(**kwargs)       
         self.bs_params = BesselParams()
- 
+                
     def switch_theme_style(self):            
         self.theme_cls.theme_style = (
             "Dark" if self.theme_cls.theme_style == "Light" else "Light"
         )
 
         self.theme_cls.surfaceContainerHighestColor = (
-            self.app_config.card_l_color if self.theme_cls.theme_style == "Light" else self.theme_cls.surfaceContainerHighestColor
+            Config.card_l_color if self.theme_cls.theme_style == "Light" else self.theme_cls.surfaceContainerHighestColor
         )
                                   
     def build(self):        
@@ -65,13 +64,11 @@ class SMethodsApp(MDApp):
         self.theme_cls.primary_palette = "Azure"
         
         if self.theme_cls.theme_style == "Light":
-            self.theme_cls.surfaceContainerHighestColor = self.app_config.card_l_color
+            self.theme_cls.surfaceContainerHighestColor = Config.card_l_color
         return MainLayout()
 
     def on_start(self):   
-        self.root.ids.enter_box.add_widget(self.bs_params)        
-       
-      
+        self.root.ids.enter_box.add_widget(self.bs_params) 
      
 if __name__ == '__main__':
    SMethodsApp().run()

@@ -1,6 +1,14 @@
 from tools.integration import Integral
+import threading
 
 class Config():
+             
+    @staticmethod               
+    def normalize_rgb (r, g, b): 
+        r, g, b = max(0, min(255, r)), max(0, min(255, g)), max(0, min(255, b))
+        return [r/255, g/255, b/255]
+
+    card_l_color = normalize_rgb(221, 249, 255) 
     
     i1 = Integral(0, "pi", "cos(z*sin(x) - p*x)")
     i2 = Integral(0, "pi/2", "(x^2+5*x+6)*sin(3*x)")
@@ -37,10 +45,6 @@ class Config():
     p_font_narrow_wid_mult = 7  #used when calculating font size for integral parameter widget when parent widget is narrow
     p_section_height = 80
     p_section_wide_scr_mult = 1 #used to select the appropriate orientation for parameter section 
-        
-    def __init__(self):        
-        self.card_l_color = self.normalize_rgb(221, 249, 255)       
-                  
-    def normalize_rgb (self, r, g, b): 
-        r, g, b = max(0, min(255, r)), max(0, min(255, g)), max(0, min(255, b))
-        return [r/255, g/255, b/255]        
+
+
+    

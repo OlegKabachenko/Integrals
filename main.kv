@@ -20,7 +20,7 @@
 				padding: [self.width * 0.03, self.height * 0.05, self.width * 0.03, self.height * 0.05]
 				EMSelector:
 					id: example_selector						
-					items_list: (list(root.config.integral_examples.keys()))
+					items_list: root.example_keys
 					on_select: root.handle_example_select(*args) 					
 
 				EMSelector:
