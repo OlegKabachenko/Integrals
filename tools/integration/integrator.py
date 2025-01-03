@@ -5,9 +5,6 @@ from tools.integration import Integral
 
 class Integrator():  
     def __init__(self):      
-        self.formulas = ["Приклад 1", "Приклад 2", "Приклад 3", "Введення власного інтегралу"]
-
-        #self.methods = ["Метод середніх прямокутників", "Метод трапецій", "Метод Сімпсона"]
         self.methods = {
             "Метод середніх прямокутників": self.mid_rect_method,
             "Метод трапецій": self.trapezoid_method,
@@ -33,24 +30,3 @@ class Integrator():
     def simpson_method():
         pass
   
-
-
-class Integral_Examples():
-    def __init__(self, e):  
-        f1 = Function("cos(z*sin(x) - p*x)")
-        f2 = Function("(x^2+5*x+6)*sin(3*x)")
-        f3 = Function("1/(sqrt(x)-1)")
-
-        i1 = (0,"pi",f1)
-        i2 = (0,"pi/2",f2)
-        i3 = (4,9,f2)
-        
-        self.ex = [
-                (i1, "Приклад 1"),
-                (i2, "Приклад 2"),
-                (i3, "Приклад 3"),
-                (None, "Введення власного інтегралу")
-            ]
-        
-
-        

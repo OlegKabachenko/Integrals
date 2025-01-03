@@ -1,4 +1,18 @@
-class Config():  
+from tools.integration import Integral
+
+class Config():
+    
+    i1 = Integral(0, "pi", "cos(z*sin(x) - p*x)")
+    i2 = Integral(0, "pi/2", "(x^2+5*x+6)*sin(3*x)")
+    i3 = Integral(4, 9, "1/(sqrt(x)-1)")
+        
+    integral_examples = {
+            "Приклад 1": i1,
+            "Приклад 2": i2,
+            "Приклад 3": i3,
+            "Введення власного інтегралу": None
+    }
+    
     app_wide_scr_mult = 1.2 #the app window is considered wide when wide*app_wide_scr_mult > height
 
     #------for text in select formula/method area

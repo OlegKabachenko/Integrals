@@ -30,16 +30,16 @@ class MenuItem(Button):
         self.padding_x = "10sp"       
         self.halign = "left"
 
-class MainLayout(MDBoxLayout):
+class MainLayout(MDBoxLayout):   
     integrator = Integrator()
-  
+    config = Config()   
+    
     def remove_child_widgets_except(self, container, widgets_to_keep):
         for widget in container.children[:]:  
             if not isinstance(widget, tuple(widgets_to_keep)): 
                 container.remove_widget(widget)
                 
-    def handle_example_select(self, instance, s_id):
-     
+    def handle_example_select(self, instance, s_id):     
         print("handle_example_select")
         
     def handle_method_select(self, instance, s_id):
