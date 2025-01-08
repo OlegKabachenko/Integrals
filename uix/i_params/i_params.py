@@ -24,16 +24,16 @@ class ParameterText(MDTextField):
 
     def calculate_font_size(self):
         p_width = self.parent.width
-        p_height = Config.p_section_height
+        p_height = Config.P_SECTION_HEIGHT
 
         screen_width = Window.width
         screen_height = Window.height
 
-        if screen_width * Config.p_widg_wide_item_mult > screen_height:
-            multiplier = Config.p_font_wide_wid_mult
+        if screen_width * Config.P_WIDG_WIDE_ITEM_MULT > screen_height:
+            multiplier = Config.P_FONT_WIDE_WID_MULT
             self.font = (p_height * multiplier)
         else:
-            multiplier = Config.p_font_narrow_wid_mult
+            multiplier = Config.P_FONT_NARROW_WID_MULT
             chldr_cnt = max(len(self.parent.children), 1)
             self.font = math.floor(p_height * abs(p_width / chldr_cnt / (p_height * multiplier)))
 
@@ -114,7 +114,7 @@ class BaseLayout(MDBoxLayout):  #Base layout for function parameters
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.height = Config.p_section_height
+        self.height = Config.P_SECTION_HEIGHT
 
     def on_kv_post(self, base_widget):
         print("kivipost")
@@ -124,18 +124,18 @@ class BaseLayout(MDBoxLayout):  #Base layout for function parameters
         screen_width = Window.width
         screen_height = Window.height
 
-        critical_wdth = screen_width * Config.app_wide_scr_mult
+        critical_wdth = screen_width * Config.APP_WIDE_SCR_MULT
 
         # When the widget is being initialized (first call to orientation_check),
         # the current value of self.orientation does not affect the setup.
         if critical_wdth > screen_height and (self.orientation == "vertical" or self.first_call):
             self.orientation = "horizontal"
-            self.height = Config.p_section_height
+            self.height = Config.P_SECTION_HEIGHT
             self.spacing = "60dp"
 
         elif critical_wdth <= screen_height and (self.orientation == "horizontal" or self.first_call):
             self.orientation = "vertical"
-            self.height = len(self.children) * Config.p_section_height
+            self.height = len(self.children) * Config.P_SECTION_HEIGHT
             self.spacing = "0dp"
 
         if self.first_call:

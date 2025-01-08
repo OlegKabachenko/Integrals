@@ -1,5 +1,3 @@
-import time
-
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.button import Button
@@ -34,9 +32,9 @@ class MenuItem(Button):
 
 class MainLayout(MDScreen):
     integrator = Integrator()
-    example_keys = list(Config.integral_examples.keys())
-    start_example_id = Config.default_example_id
-    start_method_id = Config.default_method_id
+    example_keys = list(Config.INTEGRAL_EXAMPLES.keys())
+    start_example_id = Config.DEFAULT_EXAMPLE_ID
+    start_method_id = Config.DEFAULT_METHOD_ID
     animator = Animator()
 
     def __init__(self, **kwargs):
@@ -58,6 +56,7 @@ class MainLayout(MDScreen):
 
     def handle_method_select(self, s_id, prev_id):
         if s_id != prev_id:
+            print()
             self.animator.animate_container_clear(self.ids.method_params)
             self.animator.animate_widget_add(self.ids.method_params, self.md_rect_params)
 
@@ -73,7 +72,7 @@ class SMethodsApp(MDApp):
         )
 
         self.theme_cls.surfaceContainerHighestColor = (
-            Config.card_l_color
+            Config.CARD_L_COLOR
             if self.theme_cls.theme_style == "Light"
             else self.theme_cls.surfaceContainerHighestColor
         )
@@ -83,7 +82,7 @@ class SMethodsApp(MDApp):
         self.theme_cls.primary_palette = "Azure"
 
         if self.theme_cls.theme_style == "Light":
-            self.theme_cls.surfaceContainerHighestColor = Config.card_l_color
+            self.theme_cls.surfaceContainerHighestColor = Config.CARD_L_COLOR
 
         return self.main_layout
 

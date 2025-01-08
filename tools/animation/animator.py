@@ -46,13 +46,13 @@ class Animator:
         widget.opacity = 0
         widget.height = 0
         container.add_widget(widget)
-        self.animate_widget_vertical(widget, 1, final_height, 1)
+        self.animate_widget_vertical(widget, 1, final_height, 0.5)
 
     def animate_widget_delete(self, container, widget):
         start_width = widget.height
         widget_delete = partial(self.widget_delete, container, widget, start_width)
 
-        self.animate_widget_vertical(widget, 0, 0, 1, widget_delete)
+        self.animate_widget_vertical(widget, 0, 0, 0.5, widget_delete)
 
     def animate_container_clear(self, container):
         if container.children:

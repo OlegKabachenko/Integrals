@@ -56,9 +56,9 @@ class SelectButton(MDFabButton):
         root_w = Window.width
         root_h = Window.height
         if root_w > root_h:
-            font_size = str(menu_width / (Config.menu_item_wide_fnt_mult * root_w / root_h)) + "sp"
+            font_size = str(menu_width / (Config.MENU_ITEM_WIDE_FNT_MULT * root_w / root_h)) + "sp"
         else:
-            font_size = str(menu_width / (Config.menu_item_narrow_fnt_mult * root_w / root_h)) + "sp"
+            font_size = str(menu_width / (Config.MENU_ITEM_NARROW_FNT_MULT * root_w / root_h)) + "sp"
         return font_size
 
     def build_menu(self, item, text_field=None):
@@ -125,26 +125,26 @@ class SFMArea(MDBoxLayout):
 
 class SFMLabel(MDLabel):
     def calculate_font_size(self):
-        font_corr_divider = Config.sfm_corr_wide_divider
+        font_corr_divider = Config.SFM_CORR_WIDE_DIVIDER
 
         screen_width = Window.width
         screen_height = Window.height
 
-        if screen_width * Config.app_wide_scr_mult > screen_height:  #for width/narrow screen, different formulas give good result
-            base_font = self.parent.height * Config.sfm_wide_fnt_mult
+        if screen_width * Config.APP_WIDE_SCR_MULT > screen_height:  #for width/narrow screen, different formulas give good result
+            base_font = self.parent.height * Config.SFM_WIDE_FNT_MULT
         else:
-            base_font = self.parent.width * Config.sfm_narrow_fnt_mult
-            font_corr_divider = Config.sfm_corr_narrow_divider
+            base_font = self.parent.width * Config.SFM_NARROW_FNT_MULT
+            font_corr_divider = Config.SFM_CORR_NARROW_DIVIDER
 
         font_corrector = len(
             self.text) / font_corr_divider  #this correction helps to display text of different sizes correctly.
-        if font_corrector > base_font * Config.sfm_max_font_corr:
-            font_corrector = base_font * Config.sfm_max_font_corr
+        if font_corrector > base_font * Config.SFM_MAX_FONT_CORR:
+            font_corrector = base_font * Config.SFM_MAX_FONT_CORR
 
         font = math.floor(base_font - font_corrector)
 
-        if screen_width < Config.sfm_critical_width:
-            font = font * Config.sfm_extra_fnt_mult
+        if screen_width < Config.SFM_CRITICAL_WIDTH:
+            font = font * Config.SFM_EXTRA_FNT_MULT
 
         self.font_size = font
 
