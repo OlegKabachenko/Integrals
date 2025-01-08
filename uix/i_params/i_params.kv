@@ -1,8 +1,8 @@
 <ParameterText>:
 	mode: "filled"		
 	required: True	
-	pos_hint: {"center_x": 0.5, "center_y": 0.5}	
-	on_text: root.property_validate(self)	
+	pos_hint: {"center_x": 0.5, "center_y": 0.5}
+	on_text: root.property_validate(self)
 	on_size: self.calculate_font_size()	
 	
 	MDTextFieldHelperText:	
@@ -15,10 +15,9 @@
 
 <BaseLayout>:
 	size_hint_y: None
-	on_size: self.orientation_check()	
-	padding: ["30dp","20dp","30dp",0]	
-	
-	
+	on_size: self.orientation_check()
+	padding: ["30dp",0,"30dp",0]
+
 <CommonParams>:	
 	MDBoxLayout:
 		ParameterText:
@@ -52,15 +51,3 @@
 			MDTextFieldHintText:
 				text: "Розбиття інтервалу" 	
 				
-
-		
-	#CommonParams:
-		#id:common_formula_properties
-	
-	#BesselParams:
-		#id:bessel_formula_properties
-
-	#MidRectParams:
-		#id:mid_rectangles_properties
-	
-		

@@ -1,64 +1,82 @@
+#:import EMSelector uix.selector.EMSelector
 <StandartBoxLayout>:
 	md_bg_color: self.theme_cls.surfaceContainerHighestColor 
 	radius: [15]				
 	orientation: "vertical"	
 
-<MainLayout>:   
-	MDScreen:			
-		md_bg_color: self.theme_cls.backgroundColor
+<ParameterBox>:
+	size_hint: 1, None
+	adaptive_height: True
+	orientation: "vertical"
+	#md_bg_color: "red"
+
+
+<MainLayout>: 	
+	md_bg_color: self.theme_cls.backgroundColor	
 		 
-		MDBoxLayout:
-			id: root_box
-			orientation: "vertical"
-			padding: "10dp"
-			spacing: "10dp"
+	MDBoxLayout:
+		id: root_box
+		
+		orientation: "vertical"
+		padding: "10dp"
+		spacing: "10dp"
 			
-			StandartBoxLayout:
-				id: select_box
-				size_hint: 1, 0.2
-				spacing: (self.height * 0.05)
-				padding: [self.width * 0.03, self.height * 0.05, self.width * 0.03, self.height * 0.05]
-				EMSelector:
-					id: example_selector						
-					items_list: root.example_keys
-					on_select: root.handle_example_select(*args) 					
+		StandartBoxLayout:
+			id: select_box
+			size_hint: 1, 0.2
+			spacing: (self.height * 0.05)
+			padding: [self.width * 0.03, self.height * 0.05, self.width * 0.03, self.height * 0.05]
+			EMSelector:
+				id: example_selector						
+				items_list: root.example_keys
+				default_element_id: root.start_example_id
+				on_select: root.handle_example_select(args[1],args[2])
 
-				EMSelector:
-					id: method_selector
-					items_list: (list(root.integrator.methods.keys()))
-					on_select: root.handle_method_select(*args) 
+			EMSelector:
+				id: method_selector
+				items_list: (list(root.integrator.methods.keys()))
+				default_element_id: root.start_method_id
+				on_select: root.handle_method_select(args[1],args[2])
+
+		StandartBoxLayout:						
+			size_hint: 1, 0.4
+			ScrollView:					
+				size_hint: None, None 
+				size: self.parent.size							
+				do_scroll_x: False   
+				do_scroll_y: True 
+
+				MDBoxLayout:
+					id: enter_box
+					orientation: "vertical"
+					adaptive_height: True
+					spacing: 1
+
+					ParameterBox:
+						id: common_integral_params
+                        CommonParams
+
+					ParameterBox:
+						id: extra_integral_params
+                        CommonParams
+
+					ParameterBox:
+						id: method_params
+                        CommonParams
+
+		StandartBoxLayout:	
+			id: result_box								
+			size_hint: 1, 0.2								
+
+			MDButton:					
+				on_release: app.switch_theme_style()
+				pos_hint: {"center_x": .5}
 				
-			
-					
-								
-			StandartBoxLayout:						
-				size_hint: 1, 0.4
-				ScrollView:					
-					size_hint: None, None 
-					size: self.parent.size							
-					do_scroll_x: False   
-					do_scroll_y: True 
-
-					MDBoxLayout:
-						id: enter_box
-						orientation: "vertical"	
-						adaptive_height: True	
-						CommonParams:
-							id: common_integral_params
+				MDButtonText:						
+					text: "Set theme"
 							
-			StandartBoxLayout:	
-				id: result_box								
-				size_hint: 1, 0.2								
-
-				MDButton:					
-					on_release: app.switch_theme_style()
-					pos_hint: {"center_x": .5}
-				
-					MDButtonText:						
-						text: "Set theme"					 
-							
-			MDButton
-				style: "filled"
-				MDButtonText:
-					text:'Hello'
+		MDButton
+			style: "filled"
+			MDButtonText:
+				text:'Hello'
 		

@@ -1,76 +1,92 @@
+import time
+
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.button import Button
 
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.imagelist.imagelist import MDSmartTile
-from kivymd.uix.label import MDLabel
-from kivymd.uix.button import MDButton
-from kivymd.uix.divider import MDDivider
-
-from kivy.core.window import Window
-
-import math
 from config import Config
 from tools.integration import Integrator
+from tools.animation import Animator
 
 from uix.i_params import *
-from uix.selector import EMSelector
-from kivy.properties import ObjectProperty
 
-Builder.load_file("main.kv")#import main interface file  
+from kivy.clock import Clock
+from kivymd.uix.screen import MDScreen
+
+Builder.load_file("main.kv")  #import main interface file
+
 
 class StandartBoxLayout(MDBoxLayout):
     pass
 
+
+class ParameterBox(MDBoxLayout):
+    pass
+
+
 class MenuItem(Button):
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)  
-        self.padding_x = "10sp"       
+        super().__init__(**kwargs)
+        self.padding_x = "10sp"
         self.halign = "left"
 
-class MainLayout(MDBoxLayout):   
+
+class MainLayout(MDScreen):
     integrator = Integrator()
-    example_keys = list(Config.integral_examples.keys())    
-  
-    def remove_child_widgets_except(self, container, widgets_to_keep):
-        for widget in container.children[:]:  
-            if not isinstance(widget, tuple(widgets_to_keep)): 
-                container.remove_widget(widget)
-                
-    def handle_example_select(self, instance, s_id):     
-        print("handle_example_select")
-        
-    def handle_method_select(self, instance, s_id):
-        print("handle_method_select")    
-       
-class SMethodsApp(MDApp):       
+    example_keys = list(Config.integral_examples.keys())
+    start_example_id = Config.default_example_id
+    start_method_id = Config.default_method_id
+    animator = Animator()
+
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)       
+        super().__init__(**kwargs)
         self.bs_params = BesselParams()
-                
-    def switch_theme_style(self):            
+        self.md_rect_params = MidRectParams()
+
+        Clock.schedule_once(self.init_params)  #set default parameters fields
+
+    def init_params(self, _):
+        self.handle_example_select(self.start_example_id, self.start_example_id + 1)
+        self.handle_method_select(self.start_method_id, self.start_method_id + 1)
+
+    def handle_example_select(self, s_id, prev_id):
+        if s_id != prev_id:
+            self.animator.animate_container_clear(self.ids.extra_integral_params)
+            if s_id == 0:
+                self.animator.animate_widget_add(self.ids.extra_integral_params, self.bs_params)
+
+    def handle_method_select(self, s_id, prev_id):
+        if s_id != prev_id:
+            self.animator.animate_container_clear(self.ids.method_params)
+            self.animator.animate_widget_add(self.ids.method_params, self.md_rect_params)
+
+
+class SMethodsApp(MDApp):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.main_layout = MainLayout()
+
+    def switch_theme_style(self):
         self.theme_cls.theme_style = (
             "Dark" if self.theme_cls.theme_style == "Light" else "Light"
         )
 
         self.theme_cls.surfaceContainerHighestColor = (
-            Config.card_l_color if self.theme_cls.theme_style == "Light" else self.theme_cls.surfaceContainerHighestColor
+            Config.card_l_color
+            if self.theme_cls.theme_style == "Light"
+            else self.theme_cls.surfaceContainerHighestColor
         )
-                                  
-    def build(self):        
+
+    def build(self):
         self.theme_cls.theme_style = "Light"
         self.theme_cls.primary_palette = "Azure"
-        
+
         if self.theme_cls.theme_style == "Light":
             self.theme_cls.surfaceContainerHighestColor = Config.card_l_color
-        return MainLayout()
 
-    def on_start(self):   
-        self.root.ids.enter_box.add_widget(self.bs_params) 
-     
+        return self.main_layout
+
+
 if __name__ == '__main__':
-   SMethodsApp().run()
-
-
+    SMethodsApp().run()
