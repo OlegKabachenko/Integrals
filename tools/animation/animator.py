@@ -41,20 +41,20 @@ class Animator:
         widget.height = start_height
         container.remove_widget(widget)
 
-    def animate_widget_add(self, container, widget):
+    def animate_widget_add(self, container, widget, anim_duration=0.5):
         final_height = widget.height
         widget.opacity = 0
         widget.height = 0
         container.add_widget(widget)
-        self.animate_widget_vertical(widget, 1, final_height, 0.5)
+        self.animate_widget_vertical(widget, 1, final_height, anim_duration)
 
-    def animate_widget_delete(self, container, widget):
+    def animate_widget_delete(self, container, widget, anim_duration):
         start_width = widget.height
         widget_delete = partial(self.widget_delete, container, widget, start_width)
 
-        self.animate_widget_vertical(widget, 0, 0, 0.5, widget_delete)
+        self.animate_widget_vertical(widget, 0, 0, anim_duration, widget_delete)
 
-    def animate_container_clear(self, container):
+    def animate_container_clear(self, container, anim_duration=0.5):
         if container.children:
             for widget in container.children:
-                self.animate_widget_delete(container, widget)
+                self.animate_widget_delete(container, widget, anim_duration)

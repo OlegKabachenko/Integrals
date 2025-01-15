@@ -50,15 +50,14 @@ class MainLayout(MDScreen):
 
     def handle_example_select(self, s_id, prev_id):
         if s_id != prev_id:
-            self.animator.animate_container_clear(self.ids.extra_integral_params)
+            self.animator.animate_container_clear(self.ids.extra_integral_params, Config.ANIMATION_DURATION)
             if s_id == 0:
-                self.animator.animate_widget_add(self.ids.extra_integral_params, self.bs_params)
+                self.animator.animate_widget_add(self.ids.extra_integral_params, self.bs_params,  Config.ANIMATION_DURATION)
 
     def handle_method_select(self, s_id, prev_id):
         if s_id != prev_id:
-            print()
-            self.animator.animate_container_clear(self.ids.method_params)
-            self.animator.animate_widget_add(self.ids.method_params, self.md_rect_params)
+            self.animator.animate_container_clear(self.ids.method_params, Config.ANIMATION_DURATION)
+            self.animator.animate_widget_add(self.ids.method_params, self.md_rect_params, Config.ANIMATION_DURATION)
 
 
 class SMethodsApp(MDApp):
