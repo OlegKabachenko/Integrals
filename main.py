@@ -42,7 +42,7 @@ class MainLayout(MDScreen):
         self.bs_params = BesselParams()
         self.md_rect_params = MidRectParams()
 
-        Clock.schedule_once(self.init_params)  #set default parameters fields
+        Clock.schedule_once(self.init_params)  #set default values for parameters fields
 
     def init_params(self, _):
         self.handle_example_select(self.start_example_id, self.start_example_id + 1)
@@ -52,12 +52,18 @@ class MainLayout(MDScreen):
         if s_id != prev_id:
             self.animator.animate_container_clear(self.ids.extra_integral_params, Config.ANIMATION_DURATION)
             if s_id == 0:
-                self.animator.animate_widget_add(self.ids.extra_integral_params, self.bs_params,  Config.ANIMATION_DURATION)
+                self.animator.animate_widget_add(self.ids.extra_integral_params, self.bs_params,
+                                                 Config.ANIMATION_DURATION)
 
     def handle_method_select(self, s_id, prev_id):
         if s_id != prev_id:
+            pass
             self.animator.animate_container_clear(self.ids.method_params, Config.ANIMATION_DURATION)
             self.animator.animate_widget_add(self.ids.method_params, self.md_rect_params, Config.ANIMATION_DURATION)
+
+    @staticmethod
+    def unlock_widget(widget):
+        widget.disabled = False
 
 
 class SMethodsApp(MDApp):

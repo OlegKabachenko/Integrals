@@ -25,8 +25,7 @@ class Config:
     DEFAULT_EXAMPLE_ID = 0
     DEFAULT_METHOD_ID = 0
 
-    ANIMATION_DURATION = 5
-
+    ANIMATION_DURATION = 0.3
     #------for text in select formula/method area
     SFM_NARROW_FNT_MULT = 0.08  #font multiplier when app window is narrow
     SFM_WIDE_FNT_MULT = 0.65  #font multiplier when app window is wide
