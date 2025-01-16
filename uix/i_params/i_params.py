@@ -110,33 +110,35 @@ class ParameterText(MDTextField):
 
 
 class BaseLayout(MDBoxLayout):  #Base layout for function parameters
-    first_call = BooleanProperty(False)
-
+    h_height = Config.P_SECTION_HEIGHT
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.height = Config.P_SECTION_HEIGHT
+        self.is_animated = False
+        self.first_call = True
 
     def on_kv_post(self, base_widget):
-        print("kivipost")
+        self.is_animated = False
         self.first_call = True
 
     def orientation_check(self):
+        v_height = len(self.children) * self.h_height
+
         screen_width = Window.width
         screen_height = Window.height
-
         critical_wdth = screen_width * Config.APP_WIDE_SCR_MULT
 
-        # When the widget is being initialized (first call to orientation_check),
-        # the current value of self.orientation does not affect the setup.
-        if critical_wdth > screen_height and (self.orientation == "vertical" or self.first_call):
+        if (critical_wdth > screen_height and self.height != self.h_height) or self.first_call:
             self.orientation = "horizontal"
-            self.height = Config.P_SECTION_HEIGHT
             self.spacing = "60dp"
+            if not self.is_animated:
+                self.height = self.h_height
 
-        elif critical_wdth <= screen_height and (self.orientation == "horizontal" or self.first_call):
+        elif (critical_wdth <= screen_height  and self.height != v_height) or self.first_call:
             self.orientation = "vertical"
-            self.height = len(self.children) * Config.P_SECTION_HEIGHT
             self.spacing = "0dp"
+            if not self.is_animated:
+                self.height = v_height
 
         if self.first_call:
             self.first_call = False
