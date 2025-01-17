@@ -15,7 +15,6 @@ class Integrator:
 
     @staticmethod
     def mid_rect_method(integral: Integral, n, **extra_var):
-        c = 1 / integral.b.evalf()
         h = ((integral.b - integral.a) / n).evalf()
         x = (integral.a + h / 2).evalf()
 
@@ -25,13 +24,15 @@ class Integrator:
             f = integral.calculate_integrand(x=x, **extra_var)
             s += f
             x += h
-        s = h * s
-        return round(c * s, 6)
+
+        integral_value = (integral.integral_mlt * s * h).evalf()
+
+        return integral_value
 
     @staticmethod
     def trapezoid_method(self):
         pass
 
     @staticmethod
-    def simpson_method(self):
+    def simpson_method(integral: Integral, n, p):
         pass

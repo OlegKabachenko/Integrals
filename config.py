@@ -9,7 +9,7 @@ class Config:
 
     CARD_L_COLOR = normalize_rgb(221, 249, 255)
 
-    I1 = Integral(0, "pi", "cos(z*sin(x) - p*x)")
+    I1 = Integral(0, "pi", "cos(z*sin(x) - p*x)", "1/pi")
     I2 = Integral(0, "pi/2", "(x^2+5*x+6)*sin(3*x)")
     I3 = Integral(4, 9, "1/(sqrt(x)-1)")
 
