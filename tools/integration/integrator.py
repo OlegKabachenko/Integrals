@@ -30,9 +30,38 @@ class Integrator:
         return integral_value
 
     @staticmethod
-    def trapezoid_method(self):
-        pass
+    def trapezoid_method(integral: Integral, n, use_runge_corr: bool=True, **extra_var):
+        h = ((integral.b - integral.a) / n).evalf()
+
+        integrand_at_a = integral.calculate_integrand(x=integral.a, **extra_var)
+        integrand_at_b = integral.calculate_integrand(x=integral.b, **extra_var)
+
+        s = (integrand_at_a + integrand_at_b) / 2
+
+        for i in range(1, n):
+            s += integral.calculate_integrand(x=integral.a+i*h, **extra_var)
+
+        integral_value = (integral.integral_mlt * s * h).evalf()
+
+        if use_runge_corr:
+            integral_value = Integrator.apply_runge_correction(integral, integral_value, n, 2, **extra_var)
+
+        return integral_value
 
     @staticmethod
     def simpson_method(integral: Integral, n, p):
         pass
+
+    @staticmethod
+    def apply_runge_correction(integral: Integral, integral_value, n, p, **extra_var):
+        n_double = n * 2
+        k = n / n_double
+
+        integral_value_half_step = Integrator.trapezoid_method(integral, n_double, False, ** extra_var)
+
+        correction_factor = (integral_value - integral_value_half_step) / (pow(k, p) - 1)
+        corrected_value = integral_value+correction_factor
+
+        return corrected_value
+
+
