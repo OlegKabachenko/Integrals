@@ -1,4 +1,4 @@
-__all__ = ("CommonParams", "BesselParams", "MidRectParams")
+__all__ = ("CommonParams", "BesselParams", "MidRectParams", "TrapezoidParams")
 
 import os
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -111,6 +111,7 @@ class ParameterText(MDTextField):
 
 class BaseLayout(MDBoxLayout):  #Base layout for function parameters
     h_height = Config.P_SECTION_HEIGHT
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.height = Config.P_SECTION_HEIGHT
@@ -134,7 +135,7 @@ class BaseLayout(MDBoxLayout):  #Base layout for function parameters
             if not self.is_animated:
                 self.height = self.h_height
 
-        elif (critical_wdth <= screen_height  and self.height != v_height) or self.first_call:
+        elif (critical_wdth <= screen_height and self.height != v_height) or self.first_call:
             self.orientation = "vertical"
             self.spacing = "0dp"
             if not self.is_animated:
@@ -153,4 +154,8 @@ class BesselParams(BaseLayout):  #Bessel's parameters  (order of the Bessel func
 
 
 class MidRectParams(BaseLayout):  #Params for mid. rectangles method(integration interval partition number)
+    pass
+
+
+class TrapezoidParams(BaseLayout):  #Params for trapezoid method(integration interval partition number)
     pass

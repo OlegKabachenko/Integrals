@@ -41,6 +41,7 @@ class MainLayout(MDScreen):
         super().__init__(**kwargs)
         self.bs_params = BesselParams()
         self.md_rect_params = MidRectParams()
+        self.trapezoid_params = TrapezoidParams()
 
         Clock.schedule_once(self.init_params)  #set default values for parameters fields
 
@@ -57,9 +58,12 @@ class MainLayout(MDScreen):
 
     def handle_method_select(self, s_id, prev_id):
         if s_id != prev_id:
-            pass
             self.animator.animate_container_clear(self.ids.method_params, Config.ANIMATION_DURATION)
-            self.animator.animate_widget_add(self.ids.method_params, self.md_rect_params, Config.ANIMATION_DURATION)
+
+            if s_id == 1:
+                self.animator.animate_widget_add(self.ids.method_params, self.trapezoid_params, Config.ANIMATION_DURATION)
+            else:
+                self.animator.animate_widget_add(self.ids.method_params, self.md_rect_params, Config.ANIMATION_DURATION)
 
     @staticmethod
     def unlock_widget(widget):

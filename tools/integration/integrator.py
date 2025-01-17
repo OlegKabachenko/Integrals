@@ -30,7 +30,7 @@ class Integrator:
         return integral_value
 
     @staticmethod
-    def trapezoid_method(integral: Integral, n, use_runge_corr: bool=True, **extra_var):
+    def trapezoid_method(integral: Integral, n, use_runge_corr: bool = True, **extra_var):
         h = ((integral.b - integral.a) / n).evalf()
 
         integrand_at_a = integral.calculate_integrand(x=integral.a, **extra_var)
@@ -39,7 +39,7 @@ class Integrator:
         s = (integrand_at_a + integrand_at_b) / 2
 
         for i in range(1, n):
-            s += integral.calculate_integrand(x=integral.a+i*h, **extra_var)
+            s += integral.calculate_integrand(x=integral.a + i * h, **extra_var)
 
         integral_value = (integral.integral_mlt * s * h).evalf()
 
@@ -57,11 +57,9 @@ class Integrator:
         n_double = n * 2
         k = n / n_double
 
-        integral_value_half_step = Integrator.trapezoid_method(integral, n_double, False, ** extra_var)
+        integral_value_half_step = Integrator.trapezoid_method(integral, n_double, False, **extra_var)
 
         correction_factor = (integral_value - integral_value_half_step) / (pow(k, p) - 1)
-        corrected_value = integral_value+correction_factor
+        corrected_value = integral_value + correction_factor
 
         return corrected_value
-
-
