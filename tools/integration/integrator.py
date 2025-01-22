@@ -52,8 +52,30 @@ class Integrator:
         return integral_value
 
     @staticmethod
-    def simpson_method(integral: Integral, n, p):
-        pass
+    def simpson_method(integral: Integral, n: int, use_runge_corr: bool = True, **extra_var):
+        a = integral.get_a(True)
+        b = integral.get_b(True)
+        integral_mlt = integral.get_integral_mlt(True)
+
+        h = (b-a)/(2*n)
+        x = a
+        f = integral.calculate_integrand(x=x, **extra_var)
+        s = f / 2
+        for i in range(1, n + 1):
+            x = x + h
+            f = integral.calculate_integrand(x=x, **extra_var)
+            s = s + 2 * f
+            x = x + h
+            f = integral.calculate_integrand(x=x, **extra_var)
+            s = s + f
+        integral_value = integral_mlt*((2 * s - f) * h / 3)
+
+        if use_runge_corr:
+            integral_value = Integrator.apply_runge_correction(integral, integral_value, n, 4,
+                                                               integration_method=Integrator.simpson_method,
+                                                               **extra_var)
+
+        return integral_value
 
     @staticmethod
     def apply_runge_correction(integral: Integral, integral_value, n, p, integration_method, **extra_var):
