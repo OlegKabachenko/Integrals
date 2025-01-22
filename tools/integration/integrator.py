@@ -6,13 +6,6 @@ from tools.integration import Integral
 
 class Integrator:
 
-    def __init__(self):
-        self.methods = {
-            "Метод середніх прямокутників": self.mid_rect_method,
-            "Метод трапецій": self.trapezoid_method,
-            "Метод Сімпсона": self.simpson_method
-        }
-
     @staticmethod
     def mid_rect_method(integral: Integral, n, **extra_var):
         h = ((integral.b - integral.a) / n).evalf()
@@ -63,3 +56,9 @@ class Integrator:
         corrected_value = integral_value + correction_factor
 
         return corrected_value
+
+    methods = {
+        "Метод середніх прямокутників": mid_rect_method,
+        "Метод трапецій": trapezoid_method,
+        "Метод Сімпсона": simpson_method
+    }

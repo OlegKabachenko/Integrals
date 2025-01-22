@@ -34,7 +34,7 @@
 
 			EMSelector:
 				id: method_selector
-				items_list: (list(root.integrator.methods.keys()))
+				items_list:  root.method_keys
 				default_element_id: root.start_method_id
 				on_select: root.handle_method_select(args[1],args[2])
 

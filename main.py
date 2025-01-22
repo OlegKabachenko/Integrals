@@ -31,8 +31,8 @@ class MenuItem(Button):
 
 
 class MainLayout(MDScreen):
-    integrator = Integrator()
     example_keys = list(Config.INTEGRAL_EXAMPLES.keys())
+    method_keys = list(Integrator.methods.keys())
     start_example_id = Config.DEFAULT_EXAMPLE_ID
     start_method_id = Config.DEFAULT_METHOD_ID
     animator = Animator()
