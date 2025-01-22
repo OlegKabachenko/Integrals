@@ -37,7 +37,7 @@ class Integrator:
         integral_value = (integral.integral_mlt * s * h).evalf()
 
         if use_runge_corr:
-            integral_value = Integrator.apply_runge_correction(integral, integral_value, n, 2, **extra_var)
+            integral_value = Integrator.apply_runge_correction(integral, integral_value, n, 2, integration_method=Integrator.trapezoid_method, **extra_var)
 
         return integral_value
 
@@ -46,13 +46,13 @@ class Integrator:
         pass
 
     @staticmethod
-    def apply_runge_correction(integral: Integral, integral_value, n, p, **extra_var):
-        n_double = n * 2
-        k = n / n_double
+    def apply_runge_correction(integral: Integral, integral_value, n, p, integration_method, **extra_var):
+        k = 2
+        n_new = int(n / k)
 
-        integral_value_half_step = Integrator.trapezoid_method(integral, n_double, False, **extra_var)
+        integral_value_new_step = integration_method(integral=integral, n=n_new, use_runge_corr=False, **extra_var)
 
-        correction_factor = (integral_value - integral_value_half_step) / (pow(k, p) - 1)
+        correction_factor = (integral_value-integral_value_new_step) / (pow(k, p) - 1)
         corrected_value = integral_value + correction_factor
 
         return corrected_value
