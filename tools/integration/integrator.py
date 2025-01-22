@@ -7,9 +7,13 @@ from tools.integration import Integral
 class Integrator:
 
     @staticmethod
-    def mid_rect_method(integral: Integral, n, **extra_var):
-        h = ((integral.b - integral.a) / n).evalf()
-        x = (integral.a + h / 2).evalf()
+    def mid_rect_method(integral: Integral, n: int, **extra_var):
+        a = integral.get_a(True)
+        b = integral.get_b(True)
+        integral_mlt = integral.get_integral_mlt(True)
+
+        h = (a - b) / n
+        x = a + h / 2
 
         s = 0
 
@@ -18,26 +22,32 @@ class Integrator:
             s += f
             x += h
 
-        integral_value = (integral.integral_mlt * s * h).evalf()
+        integral_value = integral_mlt * s * h
 
         return integral_value
 
     @staticmethod
-    def trapezoid_method(integral: Integral, n, use_runge_corr: bool = True, **extra_var):
-        h = ((integral.b - integral.a) / n).evalf()
+    def trapezoid_method(integral: Integral, n: int, use_runge_corr: bool = True, **extra_var):
+        a = integral.get_a(True)
+        b = integral.get_b(True)
+        integral_mlt = integral.get_integral_mlt(True)
 
-        integrand_at_a = integral.calculate_integrand(x=integral.a, **extra_var)
-        integrand_at_b = integral.calculate_integrand(x=integral.b, **extra_var)
+        h = (b - a) / n
+
+        integrand_at_a = integral.calculate_integrand(x=a, **extra_var)
+        integrand_at_b = integral.calculate_integrand(x=b, **extra_var)
 
         s = (integrand_at_a + integrand_at_b) / 2
 
         for i in range(1, n):
-            s += integral.calculate_integrand(x=integral.a + i * h, **extra_var)
+            s += integral.calculate_integrand(x=a + i * h, **extra_var)
 
-        integral_value = (integral.integral_mlt * s * h).evalf()
+        integral_value = integral_mlt * s * h
 
         if use_runge_corr:
-            integral_value = Integrator.apply_runge_correction(integral, integral_value, n, 2, integration_method=Integrator.trapezoid_method, **extra_var)
+            integral_value = Integrator.apply_runge_correction(integral, integral_value, n, 2,
+                                                               integration_method=Integrator.trapezoid_method,
+                                                               **extra_var)
 
         return integral_value
 
