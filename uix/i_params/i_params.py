@@ -1,4 +1,4 @@
-__all__ = ("CommonParams", "BesselParams", "MidRectParams", "TrapezoidParams")
+__all__ = ("LimitParams", "IntegralExprParams", "BesselParams", "IntervalParam")
 
 import os
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -9,7 +9,7 @@ import math
 from config import Config
 from kivy.core.window import Window
 from sympy import Symbol, sympify, SympifyError
-from re import findall
+from re import findall, match
 
 with open(
         os.path.join("uix", "i_params", "i_params.kv"), encoding="utf-8"
@@ -40,28 +40,10 @@ class ParameterText(MDTextField):
         self.font_size = f"{self.font}sp"
 
     @staticmethod
-    def check_balance(text) -> bool:
-        brackets = {')': '(', ']': '['}
-        balance_stack = []
-
-        for symbol in text:
-            if symbol in brackets or symbol in brackets.values():
-                if symbol not in brackets:
-                    balance_stack.append(symbol)
-                else:
-                    if not balance_stack:
-                        return False
-                    if balance_stack[-1] == brackets[symbol]:
-                        balance_stack.pop()
-                    else:
-                        return False
-
-        return not balance_stack  #return True if text is balansed(balance_stack is empty)
-
-    @staticmethod
     def check_forbidden_symbols(expr, allowed_symbols=None) -> bool:
         if allowed_symbols is None:
             allowed_symbols = set()
+
         variables_in_expr = expr.free_symbols
         allowed_symbols = {Symbol(s) if isinstance(s, str) else s for s in allowed_symbols}  #convert str into Symbol
 
@@ -75,6 +57,9 @@ class ParameterText(MDTextField):
             text):  #prevent such structures like "cos" [must be "cos(_content_)"] or "cos(cos)" [must be "cos(cos(_content_))"]
         functions = "(cos|sin|tan|cot|sec|csc|arcsin|arccos|arctan|log)"
         f_pattern = functions + r"((?!\S)|(?=\s*(\)|\}|\])))"
+
+        if match(r'^[()]+$', text):
+            return False
 
         if findall(f_pattern, text):
             return False
@@ -90,9 +75,7 @@ class ParameterText(MDTextField):
         if allowed_symbols is None:
             allowed_symbols = set()
         user_input = item.text
-
-        if not self.check_balance(user_input):  #check if the input text has balanced brackets.
-            return self.set_error(item)
+        user_input = user_input.replace('{', '(').replace('}', ')').replace('[', '(').replace(']', ')')
 
         if not self.check_function_brackets(user_input):
             return self.set_error(item)
@@ -109,6 +92,22 @@ class ParameterText(MDTextField):
             return self.set_error(item)
 
 
+class StrictParameterText(ParameterText):
+    pass
+
+
+class IntegrandText(ParameterText):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.__allowed_symbols = {"x"}
+
+    def set_allowed_symbols(self, symbols: set[str]):
+        self.__allowed_symbols = symbols
+
+    def get_allowed_symbols(self):
+        return self.__allowed_symbols
+
+
 class BaseLayout(MDBoxLayout):  #Base layout for function parameters
     h_height = Config.P_SECTION_HEIGHT
 
@@ -121,6 +120,11 @@ class BaseLayout(MDBoxLayout):  #Base layout for function parameters
     def on_kv_post(self, base_widget):
         self.is_animated = False
         self.first_call = True
+
+    def set_params(self, **kwargs):
+        for key, value in kwargs.items():
+            if key in self.ids:
+                self.ids[key].text = value
 
     def orientation_check(self):
         v_height = len(self.children) * self.h_height
@@ -145,17 +149,24 @@ class BaseLayout(MDBoxLayout):  #Base layout for function parameters
             self.first_call = False
 
 
-class CommonParams(BaseLayout):  #Common parameters (limits of integration)
-    pass
+class LimitParams(BaseLayout):  #Common parameters (limits of integration)
+    def set_params(self, a, b):
+        self.ids.a_text.text = a
+        self.ids.b_text.text = b
+
+
+class IntegralExprParams(BaseLayout):  #Common parameters (limits of integration)
+    def set_params(self, mlt, expr, allowed_symbols):
+        self.ids.integral_mlt.text = mlt
+
+        integrand = self.ids.integrand
+        integrand.set_allowed_symbols(allowed_symbols)
+        integrand.text = expr
 
 
 class BesselParams(BaseLayout):  #Bessel's parameters  (order of the Bessel function + argument before sin)
     pass
 
 
-class MidRectParams(BaseLayout):  #Params for mid. rectangles method(integration interval partition number)
-    pass
-
-
-class TrapezoidParams(BaseLayout):  #Params for trapezoid method(integration interval partition number)
+class IntervalParam(BaseLayout):  # Common param for all method(integration interval partition number)
     pass

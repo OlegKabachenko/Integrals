@@ -32,6 +32,7 @@ class MenuItem(Button):
 
 class MainLayout(MDScreen):
     example_keys = list(Config.INTEGRAL_EXAMPLES.keys())
+    example_values = list(Config.INTEGRAL_EXAMPLES.values())
     method_keys = list(Integrator.methods.keys())
     start_example_id = Config.DEFAULT_EXAMPLE_ID
     start_method_id = Config.DEFAULT_METHOD_ID
@@ -40,10 +41,43 @@ class MainLayout(MDScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.bs_params = BesselParams()
-        self.md_rect_params = MidRectParams()
-        self.trapezoid_params = TrapezoidParams()
+
+        self.example_cnahge_actions = {i: self.default_expl_cnhg_actions(i) for i in
+                                       range(len(Config.INTEGRAL_EXAMPLES))}
+        self.set_unique_expl_cnhg_actions()
 
         Clock.schedule_once(self.init_params)  #set default values for parameters fields
+
+    def default_expl_cnhg_actions(self, i):
+        return {
+            "add_action": lambda: None,
+            "set_values_action": lambda: self.set_input_values(i),
+        }
+
+    def set_unique_expl_cnhg_actions(self):
+        self.example_cnahge_actions[0]["add_action"] = lambda: (
+            self.animator.animate_widget_add(
+                self.ids.extra_integral_params_box,
+                self.bs_params,
+                Config.ANIMATION_DURATION
+            ))
+
+    def set_input_values(self, i):
+        a = b = int_mlt = integrand = ""
+        allowed_symbols = {"x"}
+
+        integral = self.example_values[i]
+        if integral is not None:
+            a = str(integral.get_a())
+            b = str(integral.get_b())
+
+            int_mlt = str(integral.get_integral_mlt())
+            integrand = str(integral.get_integrand())
+
+            allowed_symbols = integral.get_variables()
+
+        self.ids.limits_params.set_params(a, b)
+        self.ids.integral_expr_params.set_params(int_mlt, integrand, allowed_symbols)
 
     def init_params(self, _):
         self.handle_example_select(self.start_example_id, self.start_example_id + 1)
@@ -51,19 +85,19 @@ class MainLayout(MDScreen):
 
     def handle_example_select(self, s_id, prev_id):
         if s_id != prev_id:
-            self.animator.animate_container_clear(self.ids.extra_integral_params, Config.ANIMATION_DURATION)
-            if s_id == 0:
-                self.animator.animate_widget_add(self.ids.extra_integral_params, self.bs_params,
-                                                 Config.ANIMATION_DURATION)
+            self.animator.animate_container_clear(self.ids.extra_integral_params_box, Config.ANIMATION_DURATION)
 
-    def handle_method_select(self, s_id, prev_id):
+            actions = self.example_cnahge_actions.get(s_id)
+
+            for key in actions:
+                action = actions.get(key)
+                if action is not None:
+                    action()
+
+    @staticmethod
+    def handle_method_select(s_id, prev_id):
         if s_id != prev_id:
-            self.animator.animate_container_clear(self.ids.method_params, Config.ANIMATION_DURATION)
-
-            if s_id == 1:
-                self.animator.animate_widget_add(self.ids.method_params, self.trapezoid_params, Config.ANIMATION_DURATION)
-            else:
-                self.animator.animate_widget_add(self.ids.method_params, self.md_rect_params, Config.ANIMATION_DURATION)
+            pass
 
     @staticmethod
     def unlock_widget(widget):

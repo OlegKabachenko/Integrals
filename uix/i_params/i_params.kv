@@ -2,7 +2,6 @@
 	mode: "filled"		
 	required: True	
 	pos_hint: {"center_x": 0.5, "center_y": 0.5}
-	on_text: root.property_validate(self)
 	on_size: self.calculate_font_size()	
 	
 	MDTextFieldHelperText:	
@@ -11,51 +10,65 @@
 		text: "Некоректні дані"	
 		mode: "persistent"	#!!!on_error mode changes the text color to black, when user changes app theme from Dark to Light, KiviMD problem
 		text_color_focus: [0, 0, 0, 0] 
-		text_color_normal:[0, 0, 0, 0] 
+		text_color_normal:[0, 0, 0, 0]
+
+
+<StrictParameterText>:
+    on_text: self.property_validate(self)
+
+<IntegrandText>:
+    on_text: self.property_validate(self, self.get_allowed_symbols())
 
 <BaseLayout>:
 	size_hint_y: None
 	on_size: self.orientation_check()
 	padding: ["30dp",0,"30dp",0]
 
-<CommonParams>:	
-	MDBoxLayout:
-		ParameterText:
-			id: a_text
-			MDTextFieldHintText:
-				text: "a"	
+<LimitParams>:
+    MDBoxLayout:
+        StrictParameterText:
+            id: a_text
+            MDTextFieldHintText:
+                text: "a"
 
-	MDBoxLayout:
-		ParameterText:
-			id: b_text
-			MDTextFieldHintText:
-				text: "b"	
+    MDBoxLayout:
+        StrictParameterText:
+            id: b_text
+            MDTextFieldHintText:
+                text: "b"
+
+<IntegralExprParams>:
+    MDBoxLayout:
+        StrictParameterText:
+            id: integral_mlt
+            MDTextFieldHintText:
+                text: "Множник інтегралу"
+
+    MDBoxLayout:
+        IntegrandText:
+            id: integrand
+            MDTextFieldHintText:
+                text: "Підінтегральний вир."
+
 <BesselParams>:		
 	MDBoxLayout:	
-		ParameterText:				
+		StrictParameterText:
 			id: z_text				
 			MDTextFieldHintText:
 				text: "Аргумент z"			
 	MDBoxLayout:
-		ParameterText:
+		StrictParameterText:
 			id: p_text
 			input_filter: 'int'
 			MDTextFieldHintText:
 				text: "Порядок ф-ії"	
-				
-<MidRectParams>:
-	MDBoxLayout:	
-		ParameterText:				
-			id: h_text_mrp
+
+<IntervalParam>:
+	MDBoxLayout:
+		StrictParameterText:
+			id: interval_param
 			input_filter: 'int'
 			MDTextFieldHintText:
 				text: "Розбиття інтервалу"
 
-<TrapezoidParams>:
-	MDBoxLayout:
-		ParameterText:
-			id: h_text_tp
-			input_filter: 'int'
-			MDTextFieldHintText:
-				text: "Розбиття інтервалу"
 				

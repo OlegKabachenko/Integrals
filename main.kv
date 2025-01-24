@@ -53,16 +53,21 @@
 					spacing: 1
 
 					ParameterBox:
-						id: common_integral_params
-                        CommonParams
+						id: limits_params_box
+                        LimitParams:
+                            id: limits_params
+
+                    ParameterBox:
+						id: integral_expr_params_box
+                        IntegralExprParams:
+                            id: integral_expr_params
 
 					ParameterBox:
-						id: extra_integral_params
-                        #CommonParams
+						id: extra_integral_params_box
 
 					ParameterBox:
-						id: method_params
-                        #CommonParams
+						id: method_params_box
+                        IntervalParam
 
 		StandartBoxLayout:	
 			id: result_box								
