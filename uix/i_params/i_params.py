@@ -3,7 +3,6 @@ __all__ = ("LimitParams", "IntegralExprParams", "BesselParams", "IntervalParam")
 import os
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.textfield import MDTextField
-from kivy.properties import BooleanProperty
 from kivy.lang import Builder
 import math
 from config import Config
@@ -168,5 +167,5 @@ class BesselParams(BaseLayout):  #Bessel's parameters  (order of the Bessel func
     pass
 
 
-class IntervalParam(BaseLayout):  # Common param for all method(integration interval partition number)
+class IntervalParam(BaseLayout):  #Interval parameters  (min/max)
     pass

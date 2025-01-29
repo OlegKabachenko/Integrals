@@ -1,4 +1,5 @@
-#:import EMSelector uix.selector.EMSelector
+#:import SelectorBox uix.controlbox.SelectorBox
+
 <StandartBoxLayout>:
 	md_bg_color: self.theme_cls.surfaceContainerHighestColor 
 	radius: [15]				
@@ -8,8 +9,22 @@
 	size_hint: 1, None
 	adaptive_height: True
 	orientation: "vertical"
-	#md_bg_color: "red"
 
+<CalculateBtn>:
+    pos_hint: {"center_x": .5}
+    style: "filled"
+    MDButtonText:
+        theme_font_size: "Custom"
+        font_size: "20sp"
+        text:'Розрахувати'
+
+<AnswerLabel>:
+    halign: "center"
+    valign: "center"
+    text: "Відповідь: 223.342"
+    theme_font_size: "Custom"
+    on_text: self.calculate_font_size()
+    on_size: self.calculate_font_size()
 
 <MainLayout>: 	
 	md_bg_color: self.theme_cls.backgroundColor	
@@ -26,13 +41,13 @@
 			size_hint: 1, 0.2
 			spacing: (self.height * 0.05)
 			padding: [self.width * 0.03, self.height * 0.05, self.width * 0.03, self.height * 0.05]
-			EMSelector:
-				id: example_selector						
+			SelectorBox:
+				id: example_selector
 				items_list: root.example_keys
 				default_element_id: root.start_example_id
 				on_select: root.handle_example_select(args[1],args[2])
 
-			EMSelector:
+			SelectorBox:
 				id: method_selector
 				items_list:  root.method_keys
 				default_element_id: root.start_method_id
@@ -69,19 +84,23 @@
 						id: method_params_box
                         IntervalParam
 
-		StandartBoxLayout:	
-			id: result_box								
-			size_hint: 1, 0.2								
+		StandartBoxLayout:
+		    id: result_box
+			size_hint: 1, 0.2
+			padding: "10dp"
+			spacing: "10dp"
 
-			MDButton:					
-				on_release: app.switch_theme_style()
-				pos_hint: {"center_x": .5}
+			MDBoxLayout:
+			    CalculateBox:
+			        id: calculate_box
+			        size_hint: 1, 0.5
+
+		MDButton:
+			on_release: app.switch_theme_style()
+			pos_hint: {"center_x": .5}
 				
-				MDButtonText:						
-					text: "Set theme"
-							
-		MDButton
-			style: "filled"
 			MDButtonText:
-				text:'Hello'
+		        text: "Set theme"
+							
+
 		

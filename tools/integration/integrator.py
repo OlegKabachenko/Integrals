@@ -1,6 +1,5 @@
 __all__ = "Integrator"
 
-from sympy import evalf
 from tools.integration import Integral
 
 
