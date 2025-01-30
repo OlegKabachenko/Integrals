@@ -106,7 +106,7 @@ class MainLayout(MDScreen):
             self.current_method_id = s_id
             self.clear_result_output()
 
-    def get_integral_value(self):
+    def get_integral_params(self):
         extra_params_box = self.ids.extra_integral_params_box
         extra_integral_params = {}
 
@@ -114,11 +114,23 @@ class MainLayout(MDScreen):
             limits = self.ids.limits_params.get_params()
             integral_params = self.ids.integral_expr_params.get_params()
             n = self.ids.interval_param.get_params()
+
             if extra_params_box.children:
                 extra_integral_params = extra_params_box.children[0].get_params()
+
+            return limits, integral_params, n, extra_integral_params
+
         except ValueError:
+            return None
+
+    def get_integral_value(self):
+        params = self.get_integral_params()
+
+        if params is None:
             self.set_result_output("Будь ласка, правильно заповніть поля!")
             return
+
+        limits, integral_params, n, extra_integral_params = params
 
         a, b = limits["a"], limits["b"]
         integrand = integral_params["integrand"]
