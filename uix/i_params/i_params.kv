@@ -1,8 +1,8 @@
 <ParameterText>:
-	mode: "filled"		
-	required: True	
+	mode: "filled"
+	required: self.is_required
 	pos_hint: {"center_x": 0.5, "center_y": 0.5}
-	on_size: self.calculate_font_size()	
+	on_size: self.calculate_font_size()
 	
 	MDTextFieldHelperText:	
 		theme_font_size: "Custom"
@@ -27,19 +27,19 @@
 <LimitParams>:
     MDBoxLayout:
         StrictParameterText:
-            id: a_text
+            id: a
             MDTextFieldHintText:
                 text: "a"
 
     MDBoxLayout:
         StrictParameterText:
-            id: b_text
+            id: b
             MDTextFieldHintText:
                 text: "b"
 
 <IntegralExprParams>:
     MDBoxLayout:
-        StrictParameterText:
+        IntegralMltPrText:
             id: integral_mlt
             MDTextFieldHintText:
                 text: "Множник інтегралу"
@@ -53,12 +53,12 @@
 <BesselParams>:		
 	MDBoxLayout:	
 		StrictParameterText:
-			id: z_text				
+			id: z
 			MDTextFieldHintText:
 				text: "Аргумент z"			
 	MDBoxLayout:
 		StrictParameterText:
-			id: p_text
+			id: p
 			input_filter: 'int'
 			MDTextFieldHintText:
 				text: "Порядок ф-ії"	
@@ -66,7 +66,7 @@
 <IntervalParam>:
 	MDBoxLayout:
 		StrictParameterText:
-			id: interval_param
+			id: n
 			input_filter: 'int'
 			MDTextFieldHintText:
 				text: "Розбиття інтервалу"

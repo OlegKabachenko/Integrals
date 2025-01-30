@@ -6,12 +6,21 @@ from tools.integration import Integral
 class Integrator:
 
     @staticmethod
-    def mid_rect_method(integral: Integral, n: int, **kwargs):
+    def check_interval_splitting(n):
+        try:
+            return int(n)
+        except TypeError:
+            raise TypeError(f"n must be int!")
+
+    @staticmethod
+    def mid_rect_method(integral: Integral, n, **kwargs):
+        n = Integrator.check_interval_splitting(n)
+
         a = integral.get_a(True)
         b = integral.get_b(True)
         integral_mlt = integral.get_integral_mlt(True)
 
-        h = (a - b) / n
+        h = (b - a) / n
         x = a + h / 2
 
         s = 0
@@ -26,7 +35,9 @@ class Integrator:
         return integral_value
 
     @staticmethod
-    def trapezoid_method(integral: Integral, n: int, use_runge_corr: bool = True, **kwargs):
+    def trapezoid_method(integral: Integral, n, use_runge_corr: bool = True, **kwargs):
+        n = Integrator.check_interval_splitting(n)
+
         a = integral.get_a(True)
         b = integral.get_b(True)
         integral_mlt = integral.get_integral_mlt(True)
@@ -51,7 +62,9 @@ class Integrator:
         return integral_value
 
     @staticmethod
-    def simpson_method(integral: Integral, n: int, use_runge_corr: bool = True, **kwargs):
+    def simpson_method(integral: Integral, n, use_runge_corr: bool = True, **kwargs):
+        n = Integrator.check_interval_splitting(n)
+
         a = integral.get_a(True)
         b = integral.get_b(True)
         integral_mlt = integral.get_integral_mlt(True)
@@ -77,13 +90,13 @@ class Integrator:
         return integral_value
 
     @staticmethod
-    def apply_runge_correction(integral: Integral, integral_value, n, p, integration_method, **kwargs):
+    def apply_runge_correction(integral: Integral, integral_value, n, order, integration_method, **kwargs):
         k = 2
         n_new = int(n / k)
 
         integral_value_new_step = integration_method(integral=integral, n=n_new, use_runge_corr=False, **kwargs)
 
-        correction_factor = (integral_value-integral_value_new_step) / (pow(k, p) - 1)
+        correction_factor = (integral_value-integral_value_new_step) / (pow(k, order) - 1)
         corrected_value = integral_value + correction_factor
 
         return corrected_value

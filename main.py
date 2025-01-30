@@ -5,6 +5,7 @@ from kivy.uix.button import Button
 from kivymd.uix.boxlayout import MDBoxLayout
 from config import Config
 from tools.integration import Integrator
+from tools.integration import Integral
 from tools.animation import Animator
 
 from uix.i_params import *
@@ -34,12 +35,16 @@ class MainLayout(MDScreen):
     example_keys = list(Config.INTEGRAL_EXAMPLES.keys())
     example_values = list(Config.INTEGRAL_EXAMPLES.values())
     method_keys = list(Integrator.methods.keys())
+    method_values = list(Integrator.methods.values())
     start_example_id = Config.DEFAULT_EXAMPLE_ID
     start_method_id = Config.DEFAULT_METHOD_ID
     animator = Animator()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+        self.current_method_id = None
+
         self.bs_params = BesselParams()
 
         self.example_cnahge_actions = {i: self.default_expl_cnhg_actions(i) for i in
@@ -47,6 +52,11 @@ class MainLayout(MDScreen):
         self.set_unique_expl_cnhg_actions()
 
         Clock.schedule_once(self.init_params)  #set default values for parameters fields
+
+    def init_params(self, _):
+        self.current_method_id = self.start_method_id
+        self.handle_example_select(self.start_example_id, self.start_example_id + 1)
+        self.handle_method_select(self.start_method_id, self.start_method_id + 1)
 
     def default_expl_cnhg_actions(self, i):
         return {
@@ -79,10 +89,6 @@ class MainLayout(MDScreen):
         self.ids.limits_params.set_params(a, b)
         self.ids.integral_expr_params.set_params(int_mlt, integrand, allowed_symbols)
 
-    def init_params(self, _):
-        self.handle_example_select(self.start_example_id, self.start_example_id + 1)
-        self.handle_method_select(self.start_method_id, self.start_method_id + 1)
-
     def handle_example_select(self, s_id, prev_id):
         if s_id != prev_id:
             self.animator.animate_container_clear(self.ids.extra_integral_params_box, Config.ANIMATION_DURATION)
@@ -93,11 +99,46 @@ class MainLayout(MDScreen):
                 action = actions.get(key)
                 if action is not None:
                     action()
+            self.clear_result_output()
 
-    @staticmethod
-    def handle_method_select(s_id, prev_id):
+    def handle_method_select(self, s_id, prev_id):
         if s_id != prev_id:
-            pass
+            self.current_method_id = s_id
+            self.clear_result_output()
+
+    def get_integral_value(self):
+        extra_params_box = self.ids.extra_integral_params_box
+        extra_integral_params = {}
+
+        try:
+            limits = self.ids.limits_params.get_params()
+            integral_params = self.ids.integral_expr_params.get_params()
+            n = self.ids.interval_param.get_params()
+            if extra_params_box.children:
+                extra_integral_params = extra_params_box.children[0].get_params()
+        except ValueError:
+            self.set_result_output("Будь ласка, правильно заповніть поля!")
+            return
+
+        a, b = limits["a"], limits["b"]
+        integrand = integral_params["integrand"]
+        integral_mlt = integral_params["integral_mlt"]
+
+        integral = Integral(a, b, integrand, integral_mlt)
+
+        result = self.method_values[self.current_method_id](integral, n, **extra_integral_params)
+
+        self.set_result_output(round(result, Config.ROUND_PRECISION))
+
+    def set_result_output(self, content, is_error: bool = False):
+        if is_error:
+            text = str(content)
+        else:
+            text = "Відповідь: " + str(content)
+        self.ids.calculate_box.set_label_text(text)
+
+    def clear_result_output(self):
+        self.ids.calculate_box.set_label_text("")
 
     @staticmethod
     def unlock_widget(widget):

@@ -17,6 +17,8 @@ with open(
 
 
 class ParameterText(MDTextField):
+    is_required = True
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.font = 16
@@ -66,20 +68,31 @@ class ParameterText(MDTextField):
             return True
 
     @staticmethod
-    def set_error(item):
-        item.error = True
+    def set_error(item, is_error=True):
+        item.error = is_error
         return
+
+    @staticmethod
+    def correct_symbols(text):
+        text = text.replace('{', '(').replace('}', ')').replace('[', '(').replace(']', ')')
+        text = text.replace(',', '.')
+        return text
 
     def property_validate(self, item, allowed_symbols=None):
         if allowed_symbols is None:
             allowed_symbols = set()
+
+        item.text = self.correct_symbols(item.text)
+
         user_input = item.text
-        user_input = user_input.replace('{', '(').replace('}', ')').replace('[', '(').replace(']', ')')
 
         if not self.check_function_brackets(user_input):
             return self.set_error(item)
 
         try:
+            if (not user_input or not user_input.strip()) and not item.required:
+                return self.set_error(item, False)
+
             expr = sympify(user_input, convert_xor=True)
             if not self.check_forbidden_symbols(expr, allowed_symbols):
                 return self.set_error(item)
@@ -93,6 +106,10 @@ class ParameterText(MDTextField):
 
 class StrictParameterText(ParameterText):
     pass
+
+
+class IntegralMltPrText(StrictParameterText):
+    is_required = False
 
 
 class IntegrandText(ParameterText):
@@ -147,11 +164,40 @@ class BaseLayout(MDBoxLayout):  #Base layout for function parameters
         if self.first_call:
             self.first_call = False
 
+    def get_params(self, widget=None, result=None):
+        if widget is None:
+            widget = self
+        if result is None:
+            result = {}
+
+        ids_dict = widget.ids.items()
+
+        for key, value in ids_dict:
+            if isinstance(value, MDTextField):
+                result[key] = self.get_param_text(value)
+            self.get_params(value, result)
+
+        return result
+
+    @staticmethod
+    def get_param_text(widget):
+        if widget.error:
+            raise ValueError(f"Widget is in error state!")
+        else:
+            return widget.text
+
 
 class LimitParams(BaseLayout):  #Common parameters (limits of integration)
     def set_params(self, a, b):
-        self.ids.a_text.text = a
-        self.ids.b_text.text = b
+        self.ids.a.text = a
+        self.ids.b.text = b
+
+    def get_params(self, **kwargs):
+        result = {
+            "a": self.get_param_text(self.ids.a),
+            "b": self.get_param_text(self.ids.b)
+        }
+        return result
 
 
 class IntegralExprParams(BaseLayout):  #Common parameters (limits of integration)
@@ -162,10 +208,23 @@ class IntegralExprParams(BaseLayout):  #Common parameters (limits of integration
         integrand.set_allowed_symbols(allowed_symbols)
         integrand.text = expr
 
+    def get_params(self, **kwargs):
+        result = {
+            "integral_mlt": self.get_param_text(self.ids.integral_mlt) or "1",
+            "integrand": self.get_param_text(self.ids.integrand)
+        }
+        return result
+
 
 class BesselParams(BaseLayout):  #Bessel's parameters  (order of the Bessel function + argument before sin)
-    pass
+    def get_params(self, **kwargs):
+        result = {
+            "z": self.get_param_text(self.ids.z),
+            "p": self.get_param_text(self.ids.p)
+        }
+        return result
 
 
 class IntervalParam(BaseLayout):  #Interval parameters  (min/max)
-    pass
+    def get_params(self, **kwargs):
+        return self.get_param_text(self.ids.n)

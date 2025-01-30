@@ -83,6 +83,7 @@
 					ParameterBox:
 						id: method_params_box
                         IntervalParam
+                            id: interval_param
 
 		StandartBoxLayout:
 		    id: result_box
@@ -94,6 +95,7 @@
 			    CalculateBox:
 			        id: calculate_box
 			        size_hint: 1, 0.5
+			        on_btn_click: root.get_integral_value()
 
 		MDButton:
 			on_release: app.switch_theme_style()

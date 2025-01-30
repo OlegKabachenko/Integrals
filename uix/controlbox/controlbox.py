@@ -74,7 +74,7 @@ class ControlBox(MDBoxLayout):
     def on_btn_click(self):
         pass
 
-    def set_field_text(self, new_text):
+    def set_label_text(self, new_text):
         self.ids.label.text = new_text
 
     def get_label_text(self):
@@ -142,7 +142,7 @@ class SelectButton(ControlButton):
         if prev_id is None:
             raise ValueError("prev_id is None!")
 
-        self.parent.set_field_text(text)
+        self.parent.set_label_text(text)
 
         if hasattr(self, 'menu'):
             if self.menu:
