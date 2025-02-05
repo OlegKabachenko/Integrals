@@ -4,6 +4,7 @@ import os
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.textfield import MDTextField
 from kivy.lang import Builder
+from kivy.metrics import sp
 import math
 from config import Config
 from kivy.core.window import Window
@@ -97,7 +98,7 @@ class ParameterText(MDTextField):
             if not self.check_forbidden_symbols(expr, allowed_symbols):
                 return self.set_error(item)
 
-        except SympifyError:
+        except (SympifyError, ZeroDivisionError):
             return self.set_error(item)
 
         except TypeError:
@@ -157,7 +158,7 @@ class BaseLayout(MDBoxLayout):  #Base layout for function parameters
 
         elif (critical_wdth <= screen_height and self.height != v_height) or self.first_call:
             self.orientation = "vertical"
-            self.spacing = "0dp"
+            self.spacing = "5sp"
             if not self.is_animated:
                 self.height = v_height
 

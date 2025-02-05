@@ -1,6 +1,7 @@
 __all__ = "Integral"
 
-from sympy import sympify, evalf
+from sympy import sympify, evalf, div, zoo, SympifyError
+from tools.exceptions import ComplexInfError
 
 
 class Integral:
@@ -57,8 +58,11 @@ class Integral:
     @staticmethod
     def validate_sympy_expr(e, name="expression"):
         try:
-            return sympify(e)
-        except Exception:
+            result = sympify(e)
+            if result.has(zoo):
+                raise ComplexInfError(f"Complex infinity detected!")
+            return result
+        except SympifyError:
             raise ValueError(f"Invalid {name} (check the parentheses and operators)")
 
     @staticmethod

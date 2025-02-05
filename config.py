@@ -9,6 +9,8 @@ class Config:
 
     CARD_L_COLOR = normalize_rgb(221, 249, 255)
 
+    ERROR_MSG_BG_COLOR = normalize_rgb(255, 218, 214)
+
     ROUND_PRECISION = 7
 
     I1 = Integral("0", "pi", "cos(z*sin(x)-p*x)", "1/pi")
@@ -28,6 +30,12 @@ class Config:
     DEFAULT_METHOD_ID = 0
 
     ANIMATION_DURATION = 0.3
+
+    # ------for error message widget
+    HEIGHT_ERR_MSG_MLT = 3.5  # root widget of error message is considered wide when root_width >= root_height*HEIGHT_ERR_MSG_MLT:
+    ERR_MSG_WIDE_DIV_ICON = 2  #divider when root widget of error messag is wide(for size of Icons)
+    ERR_MSG_NARROW_DIV_ICON = 8  #divider when root widget of error messag is narrow(for size of Icons)
+
     #------for text in select formula/method area
     SFM_NARROW_FNT_MULT = 0.08  #font multiplier when app window is narrow
     SFM_WIDE_FNT_MULT = 0.65  #font multiplier when app window is wide

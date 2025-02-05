@@ -1,0 +1,45 @@
+<MessageIcon>:
+    theme_font_size: "Custom"
+    theme_icon_color: "Custom"
+
+<ErrorText>:
+    padding: "15dp", 0, "16dp", 0
+    theme_font_size: "Custom"
+
+    on_text: self.calculate_font(self.parent.size)
+    on_size: self.calculate_font(self.parent.size)
+
+<BottomMessage>:
+    id: bottom_sheet
+    background_color: self.bg_color
+    size_hint_y: 0.2
+    size_hint_x: 0.9
+
+    canvas.before:
+        Color:
+            rgba: self.theme_cls.outlineColor[:-1]+[0.8]
+        RoundedRectangle:
+            pos: [self.pos[0]-1, self.pos[1]-7]
+            size: [self.size[0]+2, self.size[1]+8]
+            radius: [16]
+
+    MDBoxLayout:
+        padding: "10dp", 0, "5dp", 0
+        MessageIcon:
+            icon: root.icon
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            icon_color: root.icon_color
+
+        ErrorText:
+            text: root.text
+            text_color: root.text_color
+
+        MDBottomSheetDragHandleButton:
+            icon: "close"
+            ripple_effect: False
+            on_release: bottom_sheet.set_state("toggle")
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            theme_icon_color: "Custom"
+            theme_font_size: "Custom"
+            font_size: "30dp"
+            icon_color: root.close_icon_color

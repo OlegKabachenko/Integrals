@@ -3,10 +3,12 @@ from kivy.lang import Builder
 from kivy.uix.button import Button
 
 from kivymd.uix.boxlayout import MDBoxLayout
+
 from config import Config
 from tools.integration import Integrator
 from tools.integration import Integral
 from tools.animation import Animator
+from tools.exceptions import ComplexInfError
 
 from uix.i_params import *
 
@@ -42,6 +44,7 @@ class MainLayout(MDScreen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.dialog = None
 
         self.current_method_id = None
 
@@ -127,7 +130,7 @@ class MainLayout(MDScreen):
         params = self.get_integral_params()
 
         if params is None:
-            self.set_result_output("Будь ласка, правильно заповніть поля!")
+            self.show_error("Будь ласка, правильно заповніть поля!")
             return
 
         limits, integral_params, n, extra_integral_params = params
@@ -136,11 +139,18 @@ class MainLayout(MDScreen):
         integrand = integral_params["integrand"]
         integral_mlt = integral_params["integral_mlt"]
 
-        integral = Integral(a, b, integrand, integral_mlt)
+        try:
+            integral = Integral(a, b, integrand, integral_mlt)
+        except ComplexInfError:
+            self.show_error("Комплексна нескінченність, перевірьте данні!")
+            return
 
         result = self.method_values[self.current_method_id](integral, n, **extra_integral_params)
 
         self.set_result_output(round(result, Config.ROUND_PRECISION))
+
+    def show_error(self, text):
+        self.ids.error_msg.set_text_change_state(text)
 
     def set_result_output(self, content, is_error: bool = False):
         if is_error:
