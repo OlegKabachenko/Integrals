@@ -7,8 +7,8 @@ from kivy.properties import StringProperty
 
 from kivymd.uix.bottomsheet import MDBottomSheet, MDBottomSheetDragHandleButton, MDBottomSheetDragHandleTitle
 from kivymd.uix.label import MDIcon
-
 from config import Config
+from tools.mixins import SizableFontMixin
 
 with open(
         os.path.join("uix", "bottommessage", "bottommessage.kv"), encoding="utf-8"
@@ -16,15 +16,11 @@ with open(
     Builder.load_string(kv_file.read())
 
 
-class MessageIcon(MDIcon):
-    def on_parent_size_change(self, size):
-        root_width = size[0]
-        root_height = size[1]
-
-        if root_width >= root_height * Config.HEIGHT_ERR_MSG_MLT:
-            self.font_size = root_height / Config.ERR_MSG_WIDE_DIV_ICON
-        else:
-            self.font_size = root_width / Config.ERR_MSG_NARROW_DIV_ICON
+class MessageIcon(MDIcon, SizableFontMixin):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(self.text, self,
+             base_font_mlt_wide=Config.ERR_ICON_BASE_FONT_MLT_WIDE, base_font_mlt_narrow=Config.ERR_ICON_BASE_FONT_MLT_NARROW)))
 
 
 class BottomMessage(MDBottomSheet):
@@ -38,17 +34,6 @@ class BottomMessage(MDBottomSheet):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.text = " "
-        self.bind(size=self.on_size_change)
-
-    def on_size_change(self, *args):
-        self.notify_children(self, self)
-
-    def notify_children(self, parent, root):
-        for child in parent.children:
-            if hasattr(child, 'on_parent_size_change'):
-                child.on_parent_size_change(root.size)
-
-            self.notify_children(child, root)
 
     def set_msg_text(self, text):
         self.text = text
@@ -60,15 +45,23 @@ class BottomMessage(MDBottomSheet):
         self.set_state("toggle")
 
 
-class ErrorText(MDBottomSheetDragHandleTitle):
-    def calculate_font(self, parent_size):
-        root_width = parent_size[0]
-        root_height = parent_size[1]
+class CloseBtn(MDBottomSheetDragHandleButton, SizableFontMixin):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-        if root_width >= root_height*4:
-            self.font_size = (root_width + root_height) / (len(self.text))
-        else:
-            self.font_size = (root_width + root_height + root_height) / (len(self.text) / 1.5)
+        self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(self.text, self,
+             base_font_mlt_wide=Config.ERR_ICON_BASE_FONT_MLT_WIDE, base_font_mlt_narrow=Config.ERR_ICON_BASE_FONT_MLT_NARROW)))
+
+
+class ErrorText(MDBottomSheetDragHandleTitle, SizableFontMixin):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.bind(text=lambda instance, value: setattr(self, 'font_size', self.calculate_font(self.text,
+            self.parent, length_div=Config.ERR_TEXT_LENGTH_CORR_DIV, base_font_mlt_narrow=Config.ERR_BASE_FONT_MLT_NARROW)))
+
+        self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(self.text,
+            self.parent, length_div=Config.ERR_TEXT_LENGTH_CORR_DIV, base_font_mlt_narrow=Config.ERR_BASE_FONT_MLT_NARROW)))
 
 
 class BottomErrorMessage(BottomMessage):

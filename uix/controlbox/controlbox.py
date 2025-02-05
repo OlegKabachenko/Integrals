@@ -7,7 +7,9 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFabButton
 from kivymd.uix.label import MDLabel
 from kivy.lang import Builder
-from kivy.metrics import sp
+from kivymd.uix.widget import MDWidget
+
+from tools.mixins import SizableFontMixin
 
 from kivy.core.window import Window
 from kivy.properties import ListProperty
@@ -23,38 +25,26 @@ with open(
     Builder.load_string(kv_file.read())
 
 
-class ControlButton(MDFabButton):
-    pass
+class ControlButton(MDFabButton, SizableFontMixin):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(
+            self.text, self, root = self, root_width_mlt=Config.CTRL_BTN_ROOT_WIDTH_MLT,
+            base_font_mlt_wide=Config.CTRL_BTN_BASE_FONT_MLT, base_font_mlt_narrow=Config.CTRL_BTN_BASE_FONT_MLT)))
 
 
 class LabelArea(MDBoxLayout):
     pass
 
 
-class ControlLabel(MDLabel):
-    def calculate_font_size(self):
-        font_corr_divider = Config.SFM_CORR_WIDE_DIVIDER
+class ControlLabel(MDLabel, SizableFontMixin):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-        screen_width = Window.width
-        screen_height = Window.height
-
-        if screen_width * Config.APP_WIDE_SCR_MULT > screen_height:  #for width/narrow screen, different formulas give good result
-            base_font = self.parent.height * Config.SFM_WIDE_FNT_MULT
-        else:
-            base_font = self.parent.width * Config.SFM_NARROW_FNT_MULT
-            font_corr_divider = Config.SFM_CORR_NARROW_DIVIDER
-
-        font_corrector = len(
-            self.text) / font_corr_divider  #this correction helps to display text of different sizes correctly.
-        if font_corrector > base_font * Config.SFM_MAX_FONT_CORR:
-            font_corrector = base_font * Config.SFM_MAX_FONT_CORR
-
-        font = math.floor(base_font - font_corrector)
-
-        if screen_width < Config.SFM_CRITICAL_WIDTH:
-            font = font * Config.SFM_EXTRA_FNT_MULT
-
-        self.font_size = f"{font}sp"
+        self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(
+            self.text, self.parent, base_font_mlt_wide=Config.CTRL_LBL_BASE_FONT_MLT_WIDE,
+            base_font_mlt_narrow=Config.CTRL_LBL_BASE_FONT_MLT_NARROW)))
 
 
 class ControlBox(MDBoxLayout):
@@ -87,29 +77,25 @@ class SelectButton(ControlButton):
         super().__init__(**kwargs)
         self.menu = None
 
-    @staticmethod
-    def calculate_menu_item_font(menu_width):
-
-        root_w = Window.width
-        root_h = Window.height
-        if root_w > root_h:
-            font_size = str(menu_width / (Config.MENU_ITEM_WIDE_FNT_MULT * root_w / root_h)) + "sp"
-        else:
-            font_size = str(menu_width / (Config.MENU_ITEM_NARROW_FNT_MULT * root_w / root_h)) + "sp"
-        return font_size
-
     def build_menu(self, item):
         menu_items = []
         root_w = Window.width
-        prev_id = None
 
-        menu_width = root_w / 1.5
+        menu_width = min(root_w / Config.DROP_MENU_WIDTH_DIV, Config.DROP_MENU_MAX_WIDTH)
 
         source_list = self.parent.items_list
 
         for i, entry in enumerate(source_list):
             text = entry
-            font_size = self.calculate_menu_item_font(menu_width)
+
+            mock_widget = MDWidget()  # Create a mock widget since the mixin requires an MDWidget instance
+            mock_widget.width = mock_widget.height = menu_width
+
+            font_size = self.calculate_font(
+                self.text, mock_widget, length_div=Config.DROP_MENU_TEXT_LENGTH_CORR_DIV,
+                base_font_mlt_wide=Config.DROP_MENU_BASE_FONT_MLT_WIDE,
+                base_font_mlt_narrow=Config.DROP_MENU_BASE_FONT_MLT_NARROW)
+
             background_color = MDApp.get_running_app().theme_cls.transparentColor
             text_color = MDApp.get_running_app().theme_cls.onSurfaceColor
 

@@ -6,10 +6,15 @@ from kivymd.uix.textfield import MDTextField
 from kivy.lang import Builder
 from kivy.metrics import sp
 import math
+
+from kivymd.uix.widget import MDWidget
+
 from config import Config
 from kivy.core.window import Window
 from sympy import Symbol, sympify, SympifyError
 from re import findall, match
+
+from tools.mixins import SizableFontMixin
 
 with open(
         os.path.join("uix", "i_params", "i_params.kv"), encoding="utf-8"
@@ -17,29 +22,19 @@ with open(
     Builder.load_string(kv_file.read())
 
 
-class ParameterText(MDTextField):
+class ParameterText(MDTextField, SizableFontMixin):
     is_required = True
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.font = 16
 
-    def calculate_font_size(self):
-        p_width = self.parent.width
-        p_height = Config.P_SECTION_HEIGHT
+        mock_widget = MDWidget()  # Create a mock widget since the mixin requires an MDWidget instance
+        mock_widget.width = mock_widget.height = self.height
 
-        screen_width = Window.width
-        screen_height = Window.height
-
-        if screen_width * Config.P_WIDG_WIDE_ITEM_MULT > screen_height:
-            multiplier = Config.P_FONT_WIDE_WID_MULT
-            self.font = (p_height * multiplier)
-        else:
-            multiplier = Config.P_FONT_NARROW_WID_MULT
-            chldr_cnt = max(len(self.parent.children), 1)
-            self.font = math.floor(p_height * abs(p_width / chldr_cnt / (p_height * multiplier)))
-
-        self.font_size = f"{self.font}sp"
+        self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(
+            self.text,  mock_widget, base_font_mlt_wide=Config.P_WIDG_BASE_FONT_MLT,
+            base_font_mlt_narrow=Config.P_WIDG_BASE_FONT_MLT, use_txt_corr=False)))
 
     @staticmethod
     def check_forbidden_symbols(expr, allowed_symbols=None) -> bool:

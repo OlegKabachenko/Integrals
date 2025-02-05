@@ -8,7 +8,6 @@
 	on_release: self.parent.dispatch_btn_click()
 
 	theme_font_size: "Custom"
-    font_size: self.height*0.7 if self.width > self.height else self.width*0.7
 
 
 <LabelArea>:
@@ -43,8 +42,6 @@
         id: area
         ControlLabel:
 			id: label
-			on_text: self.calculate_font_size()
-			on_size: self.calculate_font_size()
 
 
 <SelectButton>:

@@ -31,30 +31,34 @@ class Config:
 
     ANIMATION_DURATION = 0.3
 
+    # ------default values for font size config
+    TEXT_LENGTH_CORR_DIV = 1.5
+    BASE_FONT_MLT_WIDE = 0.5
+    BASE_FONT_MLT_NARROW = 0.07
+
     # ------for error message widget
+    ERR_TEXT_LENGTH_CORR_DIV = 1.2
+    ERR_BASE_FONT_MLT_NARROW = 0.067
     HEIGHT_ERR_MSG_MLT = 3.5  # root widget of error message is considered wide when root_width >= root_height*HEIGHT_ERR_MSG_MLT:
     ERR_MSG_WIDE_DIV_ICON = 2  #divider when root widget of error messag is wide(for size of Icons)
     ERR_MSG_NARROW_DIV_ICON = 8  #divider when root widget of error messag is narrow(for size of Icons)
+    ERR_ICON_BASE_FONT_MLT_WIDE = 0.9
+    ERR_ICON_BASE_FONT_MLT_NARROW = 1
 
-    #------for text in select formula/method area
-    SFM_NARROW_FNT_MULT = 0.08  #font multiplier when app window is narrow
-    SFM_WIDE_FNT_MULT = 0.65  #font multiplier when app window is wide
+    #------for text in controlbox
+    CTRL_BTN_ROOT_WIDTH_MLT = 0.8
+    CTRL_BTN_BASE_FONT_MLT = 0.7
 
-    SFM_CRITICAL_WIDTH = 360  #size that is considered very narrow
-    SFM_EXTRA_FNT_MULT = 1.4  #multiplayer to increase font size when application window is too narrow
-
-    SFM_MAX_FONT_CORR = 0.5  # the maximum % of the base font that the font_corrector can be equal to
-
-    SFM_CORR_WIDE_DIVIDER = 2.5  #font correction divider when app window is wide
-    SFM_CORR_NARROW_DIVIDER = 6  #font correction divider when app window is narrow
+    CTRL_LBL_BASE_FONT_MLT_WIDE = 0.8
+    CTRL_LBL_BASE_FONT_MLT_NARROW = 0.08
 
     #------for drop menu
-    MENU_ITEM_NARROW_FNT_MULT = 25  #font multiplier when app window is narrow(for items in drop menu)
-    MENU_ITEM_WIDE_FNT_MULT = 20  #font multiplier when app window is wide(for items in drop menu)
+    DROP_MENU_WIDTH_DIV = 1.5
+    DROP_MENU_MAX_WIDTH = 700
+    DROP_MENU_TEXT_LENGTH_CORR_DIV = 1.4
+    DROP_MENU_BASE_FONT_MLT_WIDE = 0.038
+    DROP_MENU_BASE_FONT_MLT_NARROW = 0.08
 
-    #------for integral parameters layout
-    P_WIDG_WIDE_ITEM_MULT = 2  #widget of integral parameter is considered  wide when width*p_widg_wide_item_mult > height
-    P_FONT_WIDE_WID_MULT = 0.3  #used when calculating font size for integral parameter widget when parent widget is wide
-    P_FONT_NARROW_WID_MULT = 7  #used when calculating font size for integral parameter widget when parent widget is narrow
+    #------for integral parameters widget
+    P_WIDG_BASE_FONT_MLT =0.25
     P_SECTION_HEIGHT = 85
-    P_SECTION_WIDE_SCR_MULT = 1  #used to select the appropriate orientation for parameter section
