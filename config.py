@@ -18,7 +18,7 @@ class Config:
     I3 = Integral("4", "9", "1/(sqrt(x)-1)")
 
     INTEGRAL_EXAMPLES: dict[str, Integral | None] = {
-        "Приклад 1": I1,
+        "Ф-ія Бесселя": I1,
         "Приклад 2": I2,
         "Приклад 3": I3,
         "Введення власного інтегралу": None

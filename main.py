@@ -103,6 +103,7 @@ class MainLayout(MDScreen):
                 if action is not None:
                     action()
             self.clear_result_output()
+            self.update_formula_display(self.example_values[s_id])
 
     def handle_method_select(self, s_id, prev_id):
         if s_id != prev_id:
@@ -126,6 +127,13 @@ class MainLayout(MDScreen):
         except ValueError:
             return None
 
+    def update_formula_display(self, integral: Integral):
+        if integral is None:
+            math_text = f"$\\int_{{{"a"}}}^{{{"b"}}} {""} \\,dx$"
+        else:
+            math_text = integral.get_latex_integral()
+        self.ids.formula_display.set_formula(math_text)
+
     def get_integral_value(self):
         params = self.get_integral_params()
 
@@ -147,6 +155,7 @@ class MainLayout(MDScreen):
 
         result = self.method_values[self.current_method_id](integral, n, **extra_integral_params)
 
+        self.update_formula_display(integral)
         self.set_result_output(round(result, Config.ROUND_PRECISION))
 
     def show_error(self, text):

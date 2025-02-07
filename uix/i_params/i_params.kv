@@ -1,8 +1,35 @@
+<FormulaDisplay>:
+    size_hint_y: None
+    padding:[0,10,0,0]
+
+    ScrollView:
+    	do_scroll_x: True
+		do_scroll_y: False
+
+        MDAnchorLayout:
+            size_hint: None, 1
+            width: self.parent.width +dp(1)
+            anchor_x: 'center'
+
+            MDBoxLayout:
+
+                canvas.before:
+                    Color:
+                        rgba: 1, 1, 1, 0.6
+                    RoundedRectangle:
+                        pos: (self.pos[0]-20,self.pos[1])
+
+                        size: (self.size[0]+40,self.size[1])
+                        radius: [20]
+
+                id: content_box
+                adaptive_width: True
+
+
 <ParameterText>:
 	mode: "filled"
 	required: self.is_required
 	pos_hint: {"center_x": 0.5, "center_y": 0.5}
-	#on_size: self.calculate_font_size()
 
 	MDTextFieldHelperText:	
 		theme_font_size: "Custom"

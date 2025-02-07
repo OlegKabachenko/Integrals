@@ -1,25 +1,58 @@
 __all__ = ("LimitParams", "IntegralExprParams", "BesselParams", "IntervalParam")
 
 import os
+
+from kivy.core.window import Window
+from kivy.lang import Builder
+
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.textfield import MDTextField
-from kivy.lang import Builder
-from kivy.metrics import sp
-import math
-
 from kivymd.uix.widget import MDWidget
 
+import matplotlib.pyplot as plt
+
 from config import Config
-from kivy.core.window import Window
+
 from sympy import Symbol, sympify, SympifyError
 from re import findall, match
 
 from tools.mixins import SizableFontMixin
 
+from kivy_garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+
 with open(
         os.path.join("uix", "i_params", "i_params.kv"), encoding="utf-8"
 ) as kv_file:
     Builder.load_string(kv_file.read())
+
+
+class FormulaDisplay(MDBoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.height = Config.P_SECTION_HEIGHT
+
+    def set_formula(self, math_text):
+        fig = plt.figure()
+        ax = fig.add_axes((0, 0, 1, 1))
+        ax.set_axis_off()
+
+        t = ax.text(0.5, 0.5, math_text,
+                    horizontalalignment='center',
+                    verticalalignment='center',
+                    fontsize=17, color='black')
+
+        bbox = t.get_window_extent()
+
+        fig.set_size_inches(bbox.width / fig.dpi, bbox.height / fig.dpi)
+        fig.patch.set_alpha(0)
+        canvas = FigureCanvasKivyAgg(plt.gcf())
+
+        canvas.size_hint_x = None
+        canvas.width = float(fig.get_size_inches()[0] * fig.dpi)
+
+        self.ids.content_box.clear_widgets()
+
+        self.ids.content_box.add_widget(canvas)
 
 
 class ParameterText(MDTextField, SizableFontMixin):
@@ -33,7 +66,7 @@ class ParameterText(MDTextField, SizableFontMixin):
         mock_widget.width = mock_widget.height = self.height
 
         self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(
-            self.text,  mock_widget, base_font_mlt_wide=Config.P_WIDG_BASE_FONT_MLT,
+            self.text, mock_widget, base_font_mlt_wide=Config.P_WIDG_BASE_FONT_MLT,
             base_font_mlt_narrow=Config.P_WIDG_BASE_FONT_MLT, use_txt_corr=False)))
 
     @staticmethod

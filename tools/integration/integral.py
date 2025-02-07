@@ -1,6 +1,6 @@
 __all__ = "Integral"
 
-from sympy import sympify, evalf, div, zoo, SympifyError
+from sympy import sympify, zoo, SympifyError, latex
 from tools.exceptions import ComplexInfError
 
 
@@ -83,3 +83,14 @@ class Integral:
             raise Exception(f"Missing values for variables: {', '.join([str(var) for var in missing_vars])}")
 
         return i_with_vars.evalf()
+
+    def get_latex_integral(self):
+        latex_a = latex(self.__a)
+        latex_b = latex(self.__b)
+        latex_intergand = latex(self.__integrand)
+        latex_mlt = latex(self.__integral_mlt)
+
+        if self.__integral_mlt != 1:
+            return f"${latex_mlt}\\int_{{{latex_a}}}^{{{latex_b}}} {latex_intergand} \\,dx$"
+        else:
+            return f"$\\int_{{{latex_a}}}^{{{latex_b}}} {latex_intergand} \\,dx$"

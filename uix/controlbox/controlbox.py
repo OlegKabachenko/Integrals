@@ -15,8 +15,6 @@ from kivy.core.window import Window
 from kivy.properties import ListProperty
 from kivy.clock import Clock
 
-import math
-
 from config import Config
 
 with open(
@@ -30,7 +28,7 @@ class ControlButton(MDFabButton, SizableFontMixin):
         super().__init__(**kwargs)
 
         self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(
-            self.text, self, root = self, root_width_mlt=Config.CTRL_BTN_ROOT_WIDTH_MLT,
+            self.text, self, root=self, root_width_mlt=Config.CTRL_BTN_ROOT_WIDTH_MLT,
             base_font_mlt_wide=Config.CTRL_BTN_BASE_FONT_MLT, base_font_mlt_narrow=Config.CTRL_BTN_BASE_FONT_MLT)))
 
 
