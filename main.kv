@@ -1,5 +1,6 @@
 #:import SelectorBox uix.controlbox.SelectorBox
 #:import BottomMessage uix.bottommessage.BottomErrorMessage
+#:import BigTouchSwitch  uix.bigtouchswitch.BigTouchSwitch
 
 <StandartBoxLayout>:
 	md_bg_color: self.theme_cls.surfaceContainerHighestColor
@@ -37,26 +38,34 @@
 		padding: "10dp"
 		spacing: "10dp"
 
+
 		StandartBoxLayout:
 			id: select_box
-			size_hint: 1, 0.2
+			size_hint: 1, 0.35
 			spacing: (self.height * 0.05)
 			padding: [self.width * 0.03, self.height * 0.05, self.width * 0.03, self.height * 0.05]
 			SelectorBox:
+			    size_hint: 1, 0.35
 				id: example_selector
 				items_list: root.example_keys
 				default_element_id: root.start_example_id
 				on_select: root.handle_example_select(args[1],args[2])
 
 			SelectorBox:
+			    size_hint: 1, 0.35
 				id: method_selector
 				items_list:  root.method_keys
 				default_element_id: root.start_method_id
 				on_select: root.handle_method_select(args[1],args[2])
 
+            BigTouchSwitch:
+                pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                on_active: app.switch_theme_style()
+                icon_active: "moon-waxing-crescent"
+                icon_inactive:"white-balance-sunny"
 
 		StandartBoxLayout:
-			size_hint: 1, 0.4
+			size_hint: 1, 0.5
 
 			MDScrollView:
 			    id: ssss
@@ -95,23 +104,15 @@
 
 		StandartBoxLayout:
 		    id: result_box
-			size_hint: 1, 0.2
+			size_hint: 1, 0.15
 			padding: "10dp"
 			spacing: "10dp"
 
 			MDBoxLayout:
 			    CalculateBox:
 			        id: calculate_box
-			        size_hint: 1, 0.5
+			        size_hint: 1, 0.8
 			        on_btn_click: root.get_integral_value()
-
-		MDButton:
-			on_release: app.switch_theme_style()
-			pos_hint: {"center_x": .5}
-				
-			MDButtonText:
-		        text: "Set theme"
-
 
     BottomErrorMessage:
         id: error_msg
