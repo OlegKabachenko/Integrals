@@ -24,11 +24,11 @@ class MessageIcon(MDIcon, SizableFontMixin):
 
 
 class BottomMessage(MDBottomSheet):
-    bg_color = None
-    icon = "information-outline"
-    icon_color = None
-    text_color = None
-    close_icon_color = "gray"
+    bg_color = StringProperty("white")
+    icon = StringProperty("information-outline")
+    icon_color = StringProperty("blue")
+    text_color = StringProperty("black")
+    close_icon_color = StringProperty("gray")
     text = StringProperty()
 
     def __init__(self, **kwargs):

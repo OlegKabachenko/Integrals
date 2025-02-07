@@ -4,6 +4,7 @@ import os
 
 from kivy.core.window import Window
 from kivy.lang import Builder
+from kivy.properties import NumericProperty
 
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.textfield import MDTextField
@@ -154,7 +155,7 @@ class IntegrandText(ParameterText):
 
 
 class BaseLayout(MDBoxLayout):  #Base layout for function parameters
-    h_height = Config.P_SECTION_HEIGHT
+    h_height = NumericProperty(Config.P_SECTION_HEIGHT)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

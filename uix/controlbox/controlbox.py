@@ -12,7 +12,7 @@ from kivymd.uix.widget import MDWidget
 from tools.mixins import SizableFontMixin
 
 from kivy.core.window import Window
-from kivy.properties import ListProperty
+from kivy.properties import ListProperty, ObjectProperty, NumericProperty
 from kivy.clock import Clock
 
 from config import Config
@@ -46,7 +46,7 @@ class ControlLabel(MDLabel, SizableFontMixin):
 
 
 class ControlBox(MDBoxLayout):
-    button_type = ControlButton
+    button_type = ObjectProperty(ControlButton)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -139,7 +139,8 @@ class SelectButton(ControlButton):
 
 class SelectorBox(ControlBox):
     items_list = ListProperty()
-    default_element_id = 0
+    default_element_id = NumericProperty(0)
+
     button_type = SelectButton
 
     def __init__(self, **kwargs):
