@@ -1,6 +1,8 @@
 __all__ = "Integrator"
 
 from tools.integration import Integral
+from sympy import integrate, symbols
+import time
 
 
 class Integrator:
@@ -73,7 +75,7 @@ class Integrator:
         b = integral.get_b(True)
         integral_mlt = integral.get_integral_mlt(True)
 
-        h = (b-a)/(2*n)
+        h = (b - a) / (2 * n)
         x = a
         f = integral.calculate_integrand(x=x, **kwargs)
         s = f / 2
@@ -84,7 +86,7 @@ class Integrator:
             x = x + h
             f = integral.calculate_integrand(x=x, **kwargs)
             s = s + f
-        integral_value = integral_mlt*((2 * s - f) * h / 3)
+        integral_value = integral_mlt * ((2 * s - f) * h / 3)
 
         if use_runge_corr:
             integral_value = Integrator.apply_runge_correction(integral, integral_value, n, 4,
@@ -94,13 +96,27 @@ class Integrator:
         return integral_value
 
     @staticmethod
+    def sympy_method(integral: Integral, **kwargs):
+        x = symbols('x')
+        integral_mlt = integral.get_integral_mlt(True)
+        integrand = integral.get_integrand()
+
+        for var_name, value in kwargs.items():
+            integrand = integrand.subs(var_name, value)
+
+        integral_value = integrate(integrand, (x, integral.get_a(), integral.get_b()))
+
+        integral_value = integral_mlt * integral_value.evalf()
+        return integral_value
+
+    @staticmethod
     def apply_runge_correction(integral: Integral, integral_value, n, order, integration_method, **kwargs):
         k = 2
         n_new = int(n / k)
 
         integral_value_new_step = integration_method(integral=integral, n=n_new, use_runge_corr=False, **kwargs)
 
-        correction_factor = (integral_value-integral_value_new_step) / (pow(k, order) - 1)
+        correction_factor = (integral_value - integral_value_new_step) / (pow(k, order) - 1)
         corrected_value = integral_value + correction_factor
 
         return corrected_value
@@ -108,5 +124,6 @@ class Integrator:
     methods = {
         "Метод середніх прямокутників": mid_rect_method,
         "Метод трапецій": trapezoid_method,
-        "Метод Сімпсона": simpson_method
+        "Метод Сімпсона": simpson_method,
+        "Бібліотечний метод": sympy_method
     }

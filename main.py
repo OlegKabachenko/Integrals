@@ -14,6 +14,7 @@ from uix.i_params import *
 
 from kivy.clock import Clock
 from kivymd.uix.screen import MDScreen
+import inspect
 
 Builder.load_file("main.kv")  #import main interface file
 
@@ -49,10 +50,14 @@ class MainLayout(MDScreen):
         self.current_method_id = None
 
         self.bs_params = BesselParams()
+        self.interval_param = IntervalParam()
 
-        self.example_cnahge_actions = {i: self.default_expl_cnhg_actions(i) for i in
+        self.example_change_actions = {i: self.default_expl_chng_actions(i) for i in
                                        range(len(Config.INTEGRAL_EXAMPLES))}
-        self.set_unique_expl_cnhg_actions()
+        self.set_unique_expl_chng_actions()
+        self.method_change_actions = {i: self.default_method_chng_actions() for i in
+                                       range(len(Integrator.methods))}
+        self.set_unique_method_chng_actions()
 
         Clock.schedule_once(self.init_params)  #set default values for parameters fields
 
@@ -61,19 +66,42 @@ class MainLayout(MDScreen):
         self.handle_example_select(self.start_example_id, self.start_example_id + 1)
         self.handle_method_select(self.start_method_id, self.start_method_id + 1)
 
-    def default_expl_cnhg_actions(self, i):
+    def add_interval_param(self):
+        parent_box = self.ids.interval_param_box
+        if self.interval_param not in parent_box.children:
+            self.animator.animate_widget_add(
+                parent_box,
+                self.interval_param,
+                Config.ANIMATION_DURATION
+            )
+
+    def default_expl_chng_actions(self, i):
         return {
             "add_action": lambda: None,
             "set_values_action": lambda: self.set_input_values(i),
         }
 
-    def set_unique_expl_cnhg_actions(self):
-        self.example_cnahge_actions[0]["add_action"] = lambda: (
+    def set_unique_expl_chng_actions(self):
+        self.example_change_actions[0]["add_action"] = lambda: (
             self.animator.animate_widget_add(
                 self.ids.extra_integral_params_box,
                 self.bs_params,
                 Config.ANIMATION_DURATION
             ))
+
+    def default_method_chng_actions(self):
+        return {
+            "clear_action": lambda: None,
+            "add_action": lambda: self.add_interval_param(),
+        }
+
+    def set_unique_method_chng_actions(self):
+        self.method_change_actions[3]["clear_action"] = lambda: (
+            self.animator.animate_container_clear(
+                self.ids.interval_param_box,
+                Config.ANIMATION_DURATION
+            ))
+        self.method_change_actions[3]["add_action"] = lambda: None
 
     def set_input_values(self, i):
         a = b = int_mlt = integrand = ""
@@ -92,32 +120,44 @@ class MainLayout(MDScreen):
         self.ids.limits_params.set_params(a, b)
         self.ids.integral_expr_params.set_params(int_mlt, integrand, allowed_symbols)
 
+    def execute_actions(self, s_id, is_example_actions: bool):
+        if is_example_actions:
+            actions = self.example_change_actions.get(s_id)
+        else:
+            actions = self.method_change_actions.get(s_id)
+        for key, action in actions.items():
+            if action is not None:
+                action()
+
     def handle_example_select(self, s_id, prev_id):
         if s_id != prev_id:
             self.animator.animate_container_clear(self.ids.extra_integral_params_box, Config.ANIMATION_DURATION)
 
-            actions = self.example_cnahge_actions.get(s_id)
+            self.execute_actions(s_id, True)
 
-            for key in actions:
-                action = actions.get(key)
-                if action is not None:
-                    action()
             self.clear_result_output()
             self.update_formula_display(self.example_values[s_id])
 
     def handle_method_select(self, s_id, prev_id):
         if s_id != prev_id:
             self.current_method_id = s_id
+
+            self.execute_actions(s_id, False)
+
             self.clear_result_output()
 
     def get_integral_params(self):
         extra_params_box = self.ids.extra_integral_params_box
+        interval_param_box = self.ids.interval_param_box
         extra_integral_params = {}
+        n = None
 
         try:
             limits = self.ids.limits_params.get_params()
             integral_params = self.ids.integral_expr_params.get_params()
-            n = self.ids.interval_param.get_params()
+
+            if interval_param_box.children:
+                n = interval_param_box.children[0].get_params()
 
             if extra_params_box.children:
                 extra_integral_params = extra_params_box.children[0].get_params()
@@ -133,6 +173,17 @@ class MainLayout(MDScreen):
         else:
             math_text = integral.get_latex_integral()
         self.ids.formula_display.set_formula(math_text)
+
+    def call_integrator(self, integral, n, **kwargs):
+        method = self.method_values[self.current_method_id]
+        method_signature = inspect.signature(method)
+
+        if 'n' in method_signature.parameters:
+            args = (integral, n)
+        else:
+            args = (integral,)
+
+        return method(*args, **kwargs)
 
     def get_integral_value(self):
         params = self.get_integral_params()
@@ -153,8 +204,7 @@ class MainLayout(MDScreen):
             self.show_error("Комплексна нескінченність, перевірьте данні!")
             return
 
-        result = self.method_values[self.current_method_id](integral, n, **extra_integral_params)
-
+        result = self.call_integrator(integral, n, **extra_integral_params)
         self.update_formula_display(integral)
         self.set_result_output(round(result, Config.ROUND_PRECISION))
 
