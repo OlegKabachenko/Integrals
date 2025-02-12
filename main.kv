@@ -65,7 +65,7 @@
                 icon_inactive:"white-balance-sunny"
 
 		StandartBoxLayout:
-			size_hint: 1, 0.5
+			size_hint: 1, 0.4
 
 			MDScrollView:
 			    id: ssss
@@ -101,15 +101,16 @@
 
 		StandartBoxLayout:
 		    id: result_box
-			size_hint: 1, 0.15
+			size_hint: 1, 0.25
 			padding: "10dp"
 			spacing: "10dp"
 
 			MDBoxLayout:
 			    CalculateBox:
 			        id: calculate_box
-			        size_hint: 1, 0.8
+			        size_hint: 1, 1
 			        on_btn_click: root.get_integral_value()
+
 
     BottomErrorMessage:
         id: error_msg

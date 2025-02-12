@@ -1,3 +1,5 @@
+import time
+
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.button import Button
@@ -8,7 +10,7 @@ from config import Config
 from tools.integration import Integrator
 from tools.integration import Integral
 from tools.animation import Animator
-from tools.exceptions import ComplexInfError
+from tools.exceptions import ComplexInfError, NotANumberError
 
 from uix.i_params import *
 
@@ -56,7 +58,7 @@ class MainLayout(MDScreen):
                                        range(len(Config.INTEGRAL_EXAMPLES))}
         self.set_unique_expl_chng_actions()
         self.method_change_actions = {i: self.default_method_chng_actions() for i in
-                                       range(len(Integrator.methods))}
+                                      range(len(Integrator.methods))}
         self.set_unique_method_chng_actions()
 
         Clock.schedule_once(self.init_params)  #set default values for parameters fields
@@ -183,7 +185,17 @@ class MainLayout(MDScreen):
         else:
             args = (integral,)
 
-        return method(*args, **kwargs)
+        try:
+            start_time = time.time()
+            result = method(*args, **kwargs)
+            end_time = time.time()
+        except NotANumberError:
+            self.show_error("Відповідь не число, перевірьте данні!")
+            return None
+
+        exec_time = end_time - start_time
+
+        return result, exec_time
 
     def get_integral_value(self):
         params = self.get_integral_params()
@@ -204,22 +216,27 @@ class MainLayout(MDScreen):
             self.show_error("Комплексна нескінченність, перевірьте данні!")
             return
 
-        result = self.call_integrator(integral, n, **extra_integral_params)
+        result, exec_time = self.call_integrator(integral, n, **extra_integral_params)
+
         self.update_formula_display(integral)
-        self.set_result_output(round(result, Config.ROUND_PRECISION))
+        if result is not None:
+            result = round(result, Config.ROUND_PRECISION)
+            exec_time = round(exec_time, Config.EXEC_TIME_PRECISION)
+            self.set_result_output(result, exec_time)
 
     def show_error(self, text):
         self.ids.error_msg.set_text_change_state(text)
 
-    def set_result_output(self, content, is_error: bool = False):
-        if is_error:
-            text = str(content)
-        else:
-            text = "Відповідь: " + str(content)
-        self.ids.calculate_box.set_label_text(text)
+    def set_result_output(self, answer, exec_time):
+
+        answer = "Відповідь: " + str(answer)
+        exec_time = "Час виконання: " + str(exec_time) + " сек."
+
+
+        self.ids.calculate_box.set_label_text([answer, exec_time])
 
     def clear_result_output(self):
-        self.ids.calculate_box.set_label_text("")
+        self.ids.calculate_box.set_label_text(["", ""])
 
     @staticmethod
     def unlock_widget(widget):

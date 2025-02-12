@@ -43,6 +43,9 @@ class ControlLabel(MDLabel, SizableFontMixin):
         self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(
             self.text, self.parent, base_font_mlt_wide=Config.CTRL_LBL_BASE_FONT_MLT_WIDE,
             base_font_mlt_narrow=Config.CTRL_LBL_BASE_FONT_MLT_NARROW)))
+        self.bind(text=lambda instance, value: setattr(self, 'font_size', self.calculate_font(
+            self.text, self.parent, base_font_mlt_wide=Config.CTRL_LBL_BASE_FONT_MLT_WIDE,
+            base_font_mlt_narrow=Config.CTRL_LBL_BASE_FONT_MLT_NARROW)))
 
 
 class ControlBox(MDBoxLayout):
@@ -55,6 +58,17 @@ class ControlBox(MDBoxLayout):
         self.button = self.button_type()
         self.ids["button"] = self.button
         self.add_widget(self.button)
+        self.create_label_area()
+
+    def create_label_area(self):
+        lbl_area = LabelArea()
+        self.ids["area"] = lbl_area
+
+        lbl = ControlLabel()
+
+        self.ids["label"] = lbl
+        lbl_area.add_widget(lbl)
+        self.add_widget(lbl_area)
 
     def dispatch_btn_click(self):
         event = 'on_btn_click'
@@ -164,4 +178,26 @@ class CalculateButton(ControlButton):
 
 
 class CalculateBox(ControlBox):
-    button_type = CalculateButton
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.clear_widgets()
+
+    def set_label_text(self, new_text):
+        new_answer, new_time = new_text
+        self.ids.label_answer.text = new_answer
+        self.ids.label_time.text = new_time
+
+    def set_answer_text(self, new_text):
+        self.ids.label_answer.text = new_text
+
+    def set_time_text(self, new_text):
+        self.ids.label_time.text = new_text
+
+    def get_label_text(self):
+        label_dict = {
+            "label_answer": self.ids.label_answer.text,
+            "label_time": self.ids.label_time.text
+        }
+
+        return label_dict
+

@@ -37,10 +37,6 @@
 
 <ControlBox>:
     pos_hint: {"center_x": 0.5, "center_y": 0.5}
-    LabelArea:
-        id: area
-        ControlLabel:
-			id: label
 
 
 <SelectButton>:
@@ -49,6 +45,7 @@
 
 <SelectorBox>:
 	size_hint: 1, 0.4
+    spacing: "10dp"
 
 
 <CalculateButton>:
@@ -58,5 +55,28 @@
     md_bg_color: self.theme_cls.primaryColor
     icon_color: self.theme_cls.surfaceColor
 
+<CalculateBox>:
+    spacing: "10dp"
+    CalculateButton:
+        id: button
+        size_hint: 0.15, 0.6
+
+    MDBoxLayout:
+        padding:[0, 0,0,0]
+        size_hint: 0.85, 1
+        spacing: "10dp"
+        orientation: "vertical"
+
+        LabelArea:
+            id: label_answer_area
+            size_hint: 1, 1
+            ControlLabel:
+                id: label_answer
+
+        LabelArea:
+            id: label_time_area
+            size_hint: 1, 1
+            ControlLabel:
+			    id: label_time
 
 

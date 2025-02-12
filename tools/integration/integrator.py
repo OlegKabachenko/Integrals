@@ -2,10 +2,17 @@ __all__ = "Integrator"
 
 from tools.integration import Integral
 from sympy import integrate, symbols
+from tools.exceptions import NotANumberError
+from math import isnan
 import time
 
-
 class Integrator:
+    @staticmethod
+    def check_integral_value(value):
+        if isnan(value):
+            raise NotANumberError()
+
+
     @staticmethod
     def check_interval_splitting(n):
         try:
@@ -37,7 +44,7 @@ class Integrator:
             integral_value = Integrator.apply_runge_correction(integral, integral_value, n, 2,
                                                                integration_method=Integrator.mid_rect_method,
                                                                **kwargs)
-
+        Integrator.check_integral_value(integral_value)
         return integral_value
 
     @staticmethod
@@ -65,6 +72,7 @@ class Integrator:
                                                                integration_method=Integrator.trapezoid_method,
                                                                **kwargs)
 
+        Integrator.check_integral_value(integral_value)
         return integral_value
 
     @staticmethod
@@ -93,10 +101,13 @@ class Integrator:
                                                                integration_method=Integrator.simpson_method,
                                                                **kwargs)
 
+        Integrator.check_integral_value(integral_value)
         return integral_value
 
     @staticmethod
     def sympy_method(integral: Integral, **kwargs):
+
+
         x = symbols('x')
         integral_mlt = integral.get_integral_mlt(True)
         integrand = integral.get_integrand()
@@ -107,6 +118,9 @@ class Integrator:
         integral_value = integrate(integrand, (x, integral.get_a(), integral.get_b()))
 
         integral_value = integral_mlt * integral_value.evalf()
+
+        Integrator.check_integral_value(integral_value)
+
         return integral_value
 
     @staticmethod

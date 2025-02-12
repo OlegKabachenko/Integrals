@@ -12,6 +12,7 @@ class Config:
     ERROR_MSG_BG_COLOR = normalize_rgb(255, 218, 214)
 
     ROUND_PRECISION = 7
+    EXEC_TIME_PRECISION = 5
 
     I1 = Integral("0", "pi", "cos(z*sin(x)-p*x)", "1/pi")
     I2 = Integral("0", "pi/2", "(x^2+5*x+6)*sin(3*x)")
