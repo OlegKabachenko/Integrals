@@ -4,7 +4,6 @@ from tools.integration import Integral
 
 
 class Integrator:
-
     @staticmethod
     def check_interval_splitting(n):
         try:
@@ -13,7 +12,7 @@ class Integrator:
             raise TypeError(f"n must be int!")
 
     @staticmethod
-    def mid_rect_method(integral: Integral, n, **kwargs):
+    def mid_rect_method(integral: Integral, n, use_runge_corr: bool = True, **kwargs):
         n = Integrator.check_interval_splitting(n)
 
         a = integral.get_a(True)
@@ -31,6 +30,11 @@ class Integrator:
             x += h
 
         integral_value = integral_mlt * s * h
+
+        if use_runge_corr:
+            integral_value = Integrator.apply_runge_correction(integral, integral_value, n, 2,
+                                                               integration_method=Integrator.mid_rect_method,
+                                                               **kwargs)
 
         return integral_value
 
