@@ -4,7 +4,6 @@ from tools.integration import Integral
 from sympy import integrate, symbols
 from tools.exceptions import NotANumberError
 from math import isnan
-import time
 
 class Integrator:
     @staticmethod

@@ -16,7 +16,7 @@ class Config:
 
     I1 = Integral("0", "pi", "cos(z*sin(x)-p*x)", "1/pi")
     I2 = Integral("0", "pi/2", "(x^2+5*x+6)*sin(3*x)")
-    I3 = Integral("4", "9", "1/(sqrt(x)-1)")
+    I3 = Integral("0", "2", "exp(-x^2)")
 
     INTEGRAL_EXAMPLES: dict[str, Integral | None] = {
         "Ф-ія Бесселя": I1,
