@@ -232,7 +232,6 @@ class MainLayout(MDScreen):
         answer = "Відповідь: " + str(answer)
         exec_time = "Час виконання: " + str(exec_time) + " сек."
 
-
         self.ids.calculate_box.set_label_text([answer, exec_time])
 
     def clear_result_output(self):

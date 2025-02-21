@@ -9,13 +9,13 @@ from kivymd.uix.label import MDLabel
 from kivy.lang import Builder
 from kivymd.uix.widget import MDWidget
 
-from tools.mixins import SizableFontMixin
+from uix.mixins import SizableFontMixin
 
 from kivy.core.window import Window
 from kivy.properties import ListProperty, ObjectProperty, NumericProperty
 from kivy.clock import Clock
 
-from config import Config
+from uix.uix_config import UixConfig
 
 with open(
         os.path.join("uix", "controlbox", "controlbox.kv"), encoding="utf-8"
@@ -28,8 +28,8 @@ class ControlButton(MDFabButton, SizableFontMixin):
         super().__init__(**kwargs)
 
         self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(
-            self.text, self, root=self, root_width_mlt=Config.CTRL_BTN_ROOT_WIDTH_MLT,
-            base_font_mlt_wide=Config.CTRL_BTN_BASE_FONT_MLT, base_font_mlt_narrow=Config.CTRL_BTN_BASE_FONT_MLT)))
+            self.text, self, root=self, root_width_mlt=UixConfig.CTRL_BTN_ROOT_WIDTH_MLT,
+            base_font_mlt_wide=UixConfig.CTRL_BTN_BASE_FONT_MLT, base_font_mlt_narrow=UixConfig.CTRL_BTN_BASE_FONT_MLT)))
 
 
 class LabelArea(MDBoxLayout):
@@ -41,11 +41,11 @@ class ControlLabel(MDLabel, SizableFontMixin):
         super().__init__(**kwargs)
 
         self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(
-            self.text, self.parent, base_font_mlt_wide=Config.CTRL_LBL_BASE_FONT_MLT_WIDE,
-            base_font_mlt_narrow=Config.CTRL_LBL_BASE_FONT_MLT_NARROW)))
+            self.text, self.parent, base_font_mlt_wide=UixConfig.CTRL_LBL_BASE_FONT_MLT_WIDE,
+            base_font_mlt_narrow=UixConfig.CTRL_LBL_BASE_FONT_MLT_NARROW)))
         self.bind(text=lambda instance, value: setattr(self, 'font_size', self.calculate_font(
-            self.text, self.parent, base_font_mlt_wide=Config.CTRL_LBL_BASE_FONT_MLT_WIDE,
-            base_font_mlt_narrow=Config.CTRL_LBL_BASE_FONT_MLT_NARROW)))
+            self.text, self.parent, base_font_mlt_wide=UixConfig.CTRL_LBL_BASE_FONT_MLT_WIDE,
+            base_font_mlt_narrow=UixConfig.CTRL_LBL_BASE_FONT_MLT_NARROW)))
 
 
 class ControlBox(MDBoxLayout):
@@ -93,7 +93,7 @@ class SelectButton(ControlButton):
         menu_items = []
         root_w = Window.width
 
-        menu_width = min(root_w / Config.DROP_MENU_WIDTH_DIV, Config.DROP_MENU_MAX_WIDTH)
+        menu_width = min(root_w / UixConfig.DROP_MENU_WIDTH_DIV, UixConfig.DROP_MENU_MAX_WIDTH)
 
         source_list = self.parent.items_list
 
@@ -104,9 +104,9 @@ class SelectButton(ControlButton):
             mock_widget.width = mock_widget.height = menu_width
 
             font_size = self.calculate_font(
-                self.text, mock_widget, length_div=Config.DROP_MENU_TEXT_LENGTH_CORR_DIV,
-                base_font_mlt_wide=Config.DROP_MENU_BASE_FONT_MLT_WIDE,
-                base_font_mlt_narrow=Config.DROP_MENU_BASE_FONT_MLT_NARROW)
+                self.text, mock_widget, length_div=UixConfig.DROP_MENU_TEXT_LENGTH_CORR_DIV,
+                base_font_mlt_wide=UixConfig.DROP_MENU_BASE_FONT_MLT_WIDE,
+                base_font_mlt_narrow=UixConfig.DROP_MENU_BASE_FONT_MLT_NARROW)
 
             background_color = MDApp.get_running_app().theme_cls.transparentColor
             text_color = MDApp.get_running_app().theme_cls.onSurfaceColor
@@ -200,4 +200,3 @@ class CalculateBox(ControlBox):
         }
 
         return label_dict
-

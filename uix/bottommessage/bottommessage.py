@@ -7,8 +7,8 @@ from kivy.properties import StringProperty
 
 from kivymd.uix.bottomsheet import MDBottomSheet, MDBottomSheetDragHandleButton, MDBottomSheetDragHandleTitle
 from kivymd.uix.label import MDIcon
-from config import Config
-from tools.mixins import SizableFontMixin
+from uix.uix_config import UixConfig
+from uix.mixins import SizableFontMixin
 
 with open(
         os.path.join("uix", "bottommessage", "bottommessage.kv"), encoding="utf-8"
@@ -20,7 +20,7 @@ class MessageIcon(MDIcon, SizableFontMixin):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(self.text, self,
-             base_font_mlt_wide=Config.ERR_ICON_BASE_FONT_MLT_WIDE, base_font_mlt_narrow=Config.ERR_ICON_BASE_FONT_MLT_NARROW)))
+             base_font_mlt_wide=UixConfig.ERR_ICON_BASE_FONT_MLT_WIDE, base_font_mlt_narrow=UixConfig.ERR_ICON_BASE_FONT_MLT_NARROW)))
 
 
 class BottomMessage(MDBottomSheet):
@@ -50,7 +50,7 @@ class CloseBtn(MDBottomSheetDragHandleButton, SizableFontMixin):
         super().__init__(**kwargs)
 
         self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(self.text, self,
-             base_font_mlt_wide=Config.ERR_ICON_BASE_FONT_MLT_WIDE, base_font_mlt_narrow=Config.ERR_ICON_BASE_FONT_MLT_NARROW)))
+             base_font_mlt_wide=UixConfig.ERR_ICON_BASE_FONT_MLT_WIDE, base_font_mlt_narrow=UixConfig.ERR_ICON_BASE_FONT_MLT_NARROW)))
 
 
 class ErrorText(MDBottomSheetDragHandleTitle, SizableFontMixin):
@@ -58,14 +58,14 @@ class ErrorText(MDBottomSheetDragHandleTitle, SizableFontMixin):
         super().__init__(**kwargs)
 
         self.bind(text=lambda instance, value: setattr(self, 'font_size', self.calculate_font(self.text,
-            self.parent, length_div=Config.ERR_TEXT_LENGTH_CORR_DIV, base_font_mlt_narrow=Config.ERR_BASE_FONT_MLT_NARROW)))
+            self.parent, length_div=UixConfig.ERR_TEXT_LENGTH_CORR_DIV, base_font_mlt_narrow=UixConfig.ERR_BASE_FONT_MLT_NARROW)))
 
         self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(self.text,
-            self.parent, length_div=Config.ERR_TEXT_LENGTH_CORR_DIV, base_font_mlt_narrow=Config.ERR_BASE_FONT_MLT_NARROW)))
+            self.parent, length_div=UixConfig.ERR_TEXT_LENGTH_CORR_DIV, base_font_mlt_narrow=UixConfig.ERR_BASE_FONT_MLT_NARROW)))
 
 
 class BottomErrorMessage(BottomMessage):
-    bg_color = Config.ERROR_MSG_BG_COLOR
+    bg_color = UixConfig.ERROR_MSG_BG_COLOR
     icon = "alert-circle-outline"
     icon_color = "red"
     text_color = "red"
