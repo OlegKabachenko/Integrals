@@ -2,6 +2,7 @@ __all__ = ("LimitParams", "IntegralExprParams", "BesselParams", "IntervalParam")
 
 import os
 
+import yaml
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.properties import NumericProperty
@@ -12,8 +13,6 @@ from kivymd.uix.widget import MDWidget
 
 import matplotlib.pyplot as plt
 
-from uix.uix_config import UixConfig
-
 from sympy import Symbol, sympify, SympifyError
 from re import findall, match
 
@@ -21,16 +20,17 @@ from uix.mixins import SizableFontMixin
 
 from kivy_garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 
-with open(
-        os.path.join("uix", "i_params", "i_params.kv"), encoding="utf-8"
-) as kv_file:
+
+with open('uix/uix_config.yaml', 'r') as file, \
+     open(os.path.join("uix", "i_params", "i_params.kv"), encoding="utf-8") as kv_file:
+    config = yaml.safe_load(file)
     Builder.load_string(kv_file.read())
 
 
 class FormulaDisplay(MDBoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.height = UixConfig.P_SECTION_HEIGHT
+        self.height = config['P_SECTION_HEIGHT']
 
     def set_formula(self, math_text):
         fig = plt.figure()
@@ -67,8 +67,8 @@ class ParameterText(MDTextField, SizableFontMixin):
         mock_widget.width = mock_widget.height = self.height
 
         self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(
-            self.text, mock_widget, base_font_mlt_wide=UixConfig.P_WIDG_BASE_FONT_MLT,
-            base_font_mlt_narrow=UixConfig.P_WIDG_BASE_FONT_MLT, use_txt_corr=False)))
+            self.text, mock_widget, base_font_mlt_wide=config['P_WIDG_BASE_FONT_MLT'],
+            base_font_mlt_narrow=config['P_WIDG_BASE_FONT_MLT'], use_txt_corr=False)))
 
     @staticmethod
     def check_forbidden_symbols(expr, allowed_symbols=None) -> bool:
@@ -155,11 +155,11 @@ class IntegrandText(ParameterText):
 
 
 class BaseLayout(MDBoxLayout):  #Base layout for function parameters
-    h_height = NumericProperty(UixConfig.P_SECTION_HEIGHT)
+    h_height = NumericProperty(config['P_SECTION_HEIGHT'])
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.height = UixConfig.P_SECTION_HEIGHT
+        self.height = config['P_SECTION_HEIGHT']
         self.is_animated = False
         self.first_call = True
 
@@ -177,7 +177,7 @@ class BaseLayout(MDBoxLayout):  #Base layout for function parameters
 
         screen_width = Window.width
         screen_height = Window.height
-        critical_wdth = screen_width * UixConfig.APP_WIDE_SCR_MULT
+        critical_wdth = screen_width * config['APP_WIDE_SCR_MULT']
 
         if (critical_wdth > screen_height and self.height != self.h_height) or self.first_call:
             self.orientation = "horizontal"

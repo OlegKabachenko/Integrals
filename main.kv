@@ -47,15 +47,15 @@
 			SelectorBox:
 			    size_hint: 1, 0.35
 				id: example_selector
-				items_list: root.example_keys
-				default_element_id: root.start_example_id
+				items_list: root.EXAMPLE_KEYS
+				default_element_id: root.DEFAULT_EXAMPLE_ID
 				on_select: root.handle_example_select(args[1],args[2])
 
 			SelectorBox:
 			    size_hint: 1, 0.35
 				id: method_selector
-				items_list:  root.method_keys
-				default_element_id: root.start_method_id
+				items_list:  root.METHOD_KEYS
+				default_element_id: root.DEFAULT_METHOD_ID
 				on_select: root.handle_method_select(args[1],args[2])
 
             BigTouchSwitch:

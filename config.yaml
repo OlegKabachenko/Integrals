@@ -1,0 +1,15 @@
+CARD_L_COLOR: [0.867, 0.98, 1]
+
+ROUND_PRECISION: 7
+EXEC_TIME_PRECISION: 5
+
+INTEGRAL_EXAMPLES:
+  Ф-ія Бесселя: ["0", "pi", "cos(z*sin(x)-p*x)", "1/pi"]
+  Приклад 2: ["0", "pi/2", "(x^2+5*x+6)*sin(3*x)"]
+  Приклад 3: ["0", "2", "exp(-x^2)"]
+  Введення власного інтегралу: null
+
+DEFAULT_EXAMPLE_ID: 0
+DEFAULT_METHOD_ID: 0
+
+ANIMATION_DURATION: 0.3

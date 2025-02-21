@@ -1,12 +1,12 @@
 import time
 
+import yaml
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.button import Button
 
 from kivymd.uix.boxlayout import MDBoxLayout
 
-from config import Config
 from tools.integration import Integrator
 from tools.integration import Integral
 from tools.animation import Animator
@@ -19,6 +19,9 @@ from kivymd.uix.screen import MDScreen
 import inspect
 
 Builder.load_file("main.kv")  #import main interface file
+
+with open('config.yaml', 'r', encoding="utf-8") as file:
+    config = yaml.safe_load(file)
 
 
 class StandartBoxLayout(MDBoxLayout):
@@ -37,12 +40,24 @@ class MenuItem(Button):
 
 
 class MainLayout(MDScreen):
-    example_keys = list(Config.INTEGRAL_EXAMPLES.keys())
-    example_values = list(Config.INTEGRAL_EXAMPLES.values())
-    method_keys = list(Integrator.methods.keys())
-    method_values = list(Integrator.methods.values())
-    start_example_id = Config.DEFAULT_EXAMPLE_ID
-    start_method_id = Config.DEFAULT_METHOD_ID
+    INTEGRAL_EXAMPLES = {
+        key: Integral(*value) if value else None
+        for key, value in config["INTEGRAL_EXAMPLES"].items()
+    }
+
+    #     = {
+    #     key: (None if value is None else Integral(
+    #         value["a"], value["b"], value["expression"], value.get("multiplier")
+    #     ))
+    #     for key, value in config["INTEGRALS"].items()
+    # }
+
+    EXAMPLE_KEYS = list(INTEGRAL_EXAMPLES.keys())
+    EXAMPLE_VALUES = list(INTEGRAL_EXAMPLES.values())
+    METHOD_KEYS = list(Integrator.methods.keys())
+    METHOD_VALUES = list(Integrator.methods.values())
+    DEFAULT_METHOD_ID = config['DEFAULT_METHOD_ID']
+    DEFAULT_EXAMPLE_ID = config['DEFAULT_EXAMPLE_ID']
     animator = Animator()
 
     def __init__(self, **kwargs):
@@ -55,7 +70,7 @@ class MainLayout(MDScreen):
         self.interval_param = IntervalParam()
 
         self.example_change_actions = {i: self.default_expl_chng_actions(i) for i in
-                                       range(len(Config.INTEGRAL_EXAMPLES))}
+                                       range(len(self.INTEGRAL_EXAMPLES))}
         self.set_unique_expl_chng_actions()
         self.method_change_actions = {i: self.default_method_chng_actions() for i in
                                       range(len(Integrator.methods))}
@@ -64,9 +79,9 @@ class MainLayout(MDScreen):
         Clock.schedule_once(self.init_params)  #set default values for parameters fields
 
     def init_params(self, _):
-        self.current_method_id = self.start_method_id
-        self.handle_example_select(self.start_example_id, self.start_example_id + 1)
-        self.handle_method_select(self.start_method_id, self.start_method_id + 1)
+        self.current_method_id = self.DEFAULT_METHOD_ID
+        self.handle_example_select( self.DEFAULT_EXAMPLE_ID,  self.DEFAULT_EXAMPLE_ID + 1)
+        self.handle_method_select( self.DEFAULT_METHOD_ID, self.DEFAULT_METHOD_ID + 1)
 
     def add_interval_param(self):
         parent_box = self.ids.interval_param_box
@@ -74,7 +89,7 @@ class MainLayout(MDScreen):
             self.animator.animate_widget_add(
                 parent_box,
                 self.interval_param,
-                Config.ANIMATION_DURATION
+                config['ANIMATION_DURATION']
             )
 
     def default_expl_chng_actions(self, i):
@@ -88,7 +103,7 @@ class MainLayout(MDScreen):
             self.animator.animate_widget_add(
                 self.ids.extra_integral_params_box,
                 self.bs_params,
-                Config.ANIMATION_DURATION
+                config['ANIMATION_DURATION']
             ))
 
     def default_method_chng_actions(self):
@@ -101,7 +116,7 @@ class MainLayout(MDScreen):
         self.method_change_actions[3]["clear_action"] = lambda: (
             self.animator.animate_container_clear(
                 self.ids.interval_param_box,
-                Config.ANIMATION_DURATION
+                config['ANIMATION_DURATION']
             ))
         self.method_change_actions[3]["add_action"] = lambda: None
 
@@ -109,7 +124,7 @@ class MainLayout(MDScreen):
         a = b = int_mlt = integrand = ""
         allowed_symbols = {"x"}
 
-        integral = self.example_values[i]
+        integral = self.EXAMPLE_VALUES[i]
         if integral is not None:
             a = str(integral.get_a())
             b = str(integral.get_b())
@@ -133,12 +148,12 @@ class MainLayout(MDScreen):
 
     def handle_example_select(self, s_id, prev_id):
         if s_id != prev_id:
-            self.animator.animate_container_clear(self.ids.extra_integral_params_box, Config.ANIMATION_DURATION)
+            self.animator.animate_container_clear(self.ids.extra_integral_params_box,config['ANIMATION_DURATION'])
 
             self.execute_actions(s_id, True)
 
             self.clear_result_output()
-            self.update_formula_display(self.example_values[s_id])
+            self.update_formula_display(self.EXAMPLE_VALUES[s_id])
 
     def handle_method_select(self, s_id, prev_id):
         if s_id != prev_id:
@@ -177,7 +192,7 @@ class MainLayout(MDScreen):
         self.ids.formula_display.set_formula(math_text)
 
     def call_integrator(self, integral, n, **kwargs):
-        method = self.method_values[self.current_method_id]
+        method = self.METHOD_VALUES[self.current_method_id]
         method_signature = inspect.signature(method)
 
         if 'n' in method_signature.parameters:
@@ -220,8 +235,8 @@ class MainLayout(MDScreen):
 
         self.update_formula_display(integral)
         if result is not None:
-            result = round(result, Config.ROUND_PRECISION)
-            exec_time = round(exec_time, Config.EXEC_TIME_PRECISION)
+            result = round(result, config['ROUND_PRECISION'])
+            exec_time = round(exec_time, config['EXEC_TIME_PRECISION'])
             self.set_result_output(result, exec_time)
 
     def show_error(self, text):
@@ -253,7 +268,7 @@ class SMethodsApp(MDApp):
         )
 
         self.theme_cls.surfaceContainerHighestColor = (
-            Config.CARD_L_COLOR
+            config['CARD_L_COLOR']
             if self.theme_cls.theme_style == "Light"
             else self.theme_cls.surfaceContainerHighestColor
         )
@@ -263,7 +278,7 @@ class SMethodsApp(MDApp):
         self.theme_cls.primary_palette = "Azure"
 
         if self.theme_cls.theme_style == "Light":
-            self.theme_cls.surfaceContainerHighestColor = Config.CARD_L_COLOR
+            self.theme_cls.surfaceContainerHighestColor = config['CARD_L_COLOR']
 
         return self.main_layout
 
