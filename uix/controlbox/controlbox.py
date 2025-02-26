@@ -8,6 +8,7 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFabButton
 from kivymd.uix.label import MDLabel
+from kivy.uix.button import Button
 from kivy.lang import Builder
 from kivymd.uix.widget import MDWidget
 
@@ -22,6 +23,13 @@ with open('uix/uix_config.yaml', 'r') as file, \
      open(os.path.join("uix", "controlbox", "controlbox.kv"), encoding="utf-8") as kv_file:
     config = yaml.safe_load(file)
     Builder.load_string(kv_file.read())
+
+
+class MenuItem(Button):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.padding_x = "10sp"
+        self.halign = "left"
 
 
 class ControlButton(MDFabButton, SizableFontMixin):

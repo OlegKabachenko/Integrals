@@ -3,7 +3,6 @@ import time
 import yaml
 from kivymd.app import MDApp
 from kivy.lang import Builder
-from kivy.uix.button import Button
 
 from kivymd.uix.boxlayout import MDBoxLayout
 
@@ -31,26 +30,11 @@ class StandartBoxLayout(MDBoxLayout):
 class ParameterBox(MDBoxLayout):
     pass
 
-
-class MenuItem(Button):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.padding_x = "10sp"
-        self.halign = "left"
-
-
 class MainLayout(MDScreen):
     INTEGRAL_EXAMPLES = {
         key: Integral(*value) if value else None
         for key, value in config["INTEGRAL_EXAMPLES"].items()
     }
-
-    #     = {
-    #     key: (None if value is None else Integral(
-    #         value["a"], value["b"], value["expression"], value.get("multiplier")
-    #     ))
-    #     for key, value in config["INTEGRALS"].items()
-    # }
 
     EXAMPLE_KEYS = list(INTEGRAL_EXAMPLES.keys())
     EXAMPLE_VALUES = list(INTEGRAL_EXAMPLES.values())
