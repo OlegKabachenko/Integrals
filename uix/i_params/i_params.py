@@ -5,7 +5,7 @@ import os
 import yaml
 from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.properties import NumericProperty
+from kivy.properties import NumericProperty, StringProperty
 
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.textfield import MDTextField
@@ -255,6 +255,12 @@ class BesselParams(BaseLayout):  #Bessel's parameters  (order of the Bessel func
         return result
 
 
-class IntervalParam(BaseLayout):  #Interval parameters  (min/max)
+class IntParam(BaseLayout):  #Integer parameter
+    hint = StringProperty()
+
     def get_params(self, **kwargs):
         return self.get_param_text(self.ids.n)
+
+
+class IntervalParam(IntParam):  #Interval parameter
+    hint = "Розбиття інтервалу"

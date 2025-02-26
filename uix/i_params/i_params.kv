@@ -90,12 +90,11 @@
 			MDTextFieldHintText:
 				text: "Порядок ф-ії"	
 
-<IntervalParam>:
-	MDBoxLayout:
-		StrictParameterText:
-			id: n
-			input_filter: 'int'
-			MDTextFieldHintText:
-				text: "Розбиття інтервалу"
 
-				
+<IntParam>:
+    id: int_root
+	StrictParameterText:
+		id: int
+		input_filter: 'int'
+		MDTextFieldHintText:
+			text: int_root.hint
