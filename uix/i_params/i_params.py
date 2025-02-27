@@ -259,7 +259,7 @@ class IntParam(BaseLayout):  #Integer parameter
     hint = StringProperty()
 
     def get_params(self, **kwargs):
-        return self.get_param_text(self.ids.n)
+        return self.get_param_text(self.ids.int)
 
 
 class IntervalParam(IntParam):  #Interval parameter
