@@ -6,7 +6,6 @@ import yaml
 from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import MDFabButton
 from kivymd.uix.label import MDLabel
 from kivy.uix.button import Button
 from kivy.lang import Builder
@@ -33,7 +32,7 @@ class MenuItem(Button):
         self.halign = "left"
 
 
-class ControlButton(SizableBtn, SizableFontMixin):
+class ControlButton(SizableBtn):
     pass
 
 
