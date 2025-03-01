@@ -15,6 +15,7 @@ with open(
 
 class BigTouchSwitch(MDBoxLayout):
     active = BooleanProperty(False)
+    switch_height = NumericProperty(34)
     switch_width = NumericProperty(80)
     icon_active = StringProperty("check")
     icon_inactive = StringProperty("close")
