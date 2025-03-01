@@ -18,9 +18,10 @@ from kivy.core.window import Window
 from kivy.properties import ListProperty, ObjectProperty, NumericProperty
 from kivy.clock import Clock
 
+from uix.sizablebtn import SizableBtn
 
 with open('uix/uix_config.yaml', 'r') as file, \
-     open(os.path.join("uix", "controlbox", "controlbox.kv"), encoding="utf-8") as kv_file:
+        open(os.path.join("uix", "controlbox", "controlbox.kv"), encoding="utf-8") as kv_file:
     config = yaml.safe_load(file)
     Builder.load_string(kv_file.read())
 
@@ -32,13 +33,8 @@ class MenuItem(Button):
         self.halign = "left"
 
 
-class ControlButton(MDFabButton, SizableFontMixin):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        self.bind(size=lambda instance, value: setattr(self, 'font_size', self.calculate_font(
-            self.text, self, root=self, root_width_mlt=config['CTRL_BTN_ROOT_WIDTH_MLT'],
-            base_font_mlt_wide=config['CTRL_BTN_BASE_FONT_MLT'], base_font_mlt_narrow=config['CTRL_BTN_BASE_FONT_MLT'])))
+class ControlButton(SizableBtn, SizableFontMixin):
+    pass
 
 
 class LabelArea(MDBoxLayout):

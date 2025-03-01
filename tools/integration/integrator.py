@@ -5,6 +5,7 @@ from sympy import integrate, symbols
 from tools.exceptions import NotANumberError
 from math import isnan
 
+
 class Integrator:
     @staticmethod
     def check_integral_value(value):
