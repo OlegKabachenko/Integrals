@@ -82,7 +82,7 @@ class Integral:
         if missing_vars:
             raise Exception(f"Missing values for variables: {', '.join([str(var) for var in missing_vars])}")
 
-        return i_with_vars.evalf()
+        return self.get_integral_mlt(True) * i_with_vars.evalf()
 
     def get_latex_integral(self):
         latex_a = latex(self.__a)

@@ -26,7 +26,6 @@ class Integrator:
 
         a = integral.get_a(True)
         b = integral.get_b(True)
-        integral_mlt = integral.get_integral_mlt(True)
 
         h = (b - a) / n
         x = a + h / 2
@@ -38,7 +37,7 @@ class Integrator:
             s += f
             x += h
 
-        integral_value = integral_mlt * s * h
+        integral_value = s * h
 
         if use_runge_corr:
             integral_value = Integrator.apply_runge_correction(integral, integral_value, n, 2,
@@ -53,7 +52,6 @@ class Integrator:
 
         a = integral.get_a(True)
         b = integral.get_b(True)
-        integral_mlt = integral.get_integral_mlt(True)
 
         h = (b - a) / n
 
@@ -65,7 +63,7 @@ class Integrator:
         for i in range(1, n):
             s += integral.calculate_integrand(x=a + i * h, **kwargs)
 
-        integral_value = integral_mlt * s * h
+        integral_value = s * h
 
         if use_runge_corr:
             integral_value = Integrator.apply_runge_correction(integral, integral_value, n, 2,
@@ -81,7 +79,6 @@ class Integrator:
 
         a = integral.get_a(True)
         b = integral.get_b(True)
-        integral_mlt = integral.get_integral_mlt(True)
 
         h = (b - a) / (2 * n)
         x = a
@@ -94,7 +91,7 @@ class Integrator:
             x = x + h
             f = integral.calculate_integrand(x=x, **kwargs)
             s = s + f
-        integral_value = integral_mlt * ((2 * s - f) * h / 3)
+        integral_value = ((2 * s - f) * h / 3)
 
         if use_runge_corr:
             integral_value = Integrator.apply_runge_correction(integral, integral_value, n, 4,
@@ -106,7 +103,6 @@ class Integrator:
 
     @staticmethod
     def sympy_method(integral: Integral, **kwargs):
-
 
         x = symbols('x')
         integral_mlt = integral.get_integral_mlt(True)
