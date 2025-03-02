@@ -21,7 +21,7 @@ class Integrator:
             raise TypeError(f"n must be int!")
 
     @staticmethod
-    def mid_rect_method(integral: Integral, n, use_runge_corr: bool = True, **kwargs):
+    def mid_rect_method(integral: Integral, n: int, use_runge_corr: bool = True, **kwargs):
         n = Integrator.check_interval_splitting(n)
 
         a = integral.get_a(True)
@@ -47,7 +47,7 @@ class Integrator:
         return integral_value
 
     @staticmethod
-    def trapezoid_method(integral: Integral, n, use_runge_corr: bool = True, **kwargs):
+    def trapezoid_method(integral: Integral, n: int, use_runge_corr: bool = True, **kwargs):
         n = Integrator.check_interval_splitting(n)
 
         a = integral.get_a(True)
@@ -74,7 +74,7 @@ class Integrator:
         return integral_value
 
     @staticmethod
-    def simpson_method(integral: Integral, n, use_runge_corr: bool = True, **kwargs):
+    def simpson_method(integral: Integral, n: int, use_runge_corr: bool = True, **kwargs):
         n = Integrator.check_interval_splitting(n)
 
         a = integral.get_a(True)
@@ -120,7 +120,7 @@ class Integrator:
         return integral_value
 
     @staticmethod
-    def apply_runge_correction(integral: Integral, integral_value, n, order, integration_method, **kwargs):
+    def apply_runge_correction(integral: Integral, integral_value, n: int, order: int, integration_method, **kwargs):
         k = 2
         n_new = int(n / k)
 
