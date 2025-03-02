@@ -30,6 +30,7 @@ class StandartBoxLayout(MDBoxLayout):
 class ParameterBox(MDBoxLayout):
     pass
 
+
 class MainLayout(MDScreen):
     INTEGRAL_EXAMPLES = {
         key: Integral(*value) if value else None
@@ -64,8 +65,8 @@ class MainLayout(MDScreen):
 
     def init_params(self, _):
         self.current_method_id = self.DEFAULT_METHOD_ID
-        self.handle_example_select( self.DEFAULT_EXAMPLE_ID,  self.DEFAULT_EXAMPLE_ID + 1)
-        self.handle_method_select( self.DEFAULT_METHOD_ID, self.DEFAULT_METHOD_ID + 1)
+        self.handle_example_select(self.DEFAULT_EXAMPLE_ID,  self.DEFAULT_EXAMPLE_ID + 1)
+        self.handle_method_select(self.DEFAULT_METHOD_ID, self.DEFAULT_METHOD_ID + 1)
 
     def add_interval_param(self):
         parent_box = self.ids.interval_param_box
@@ -132,7 +133,7 @@ class MainLayout(MDScreen):
 
     def handle_example_select(self, s_id, prev_id):
         if s_id != prev_id:
-            self.animator.animate_container_clear(self.ids.extra_integral_params_box,config['ANIMATION_DURATION'])
+            self.animator.animate_container_clear(self.ids.extra_integral_params_box, config['ANIMATION_DURATION'])
 
             self.execute_actions(s_id, True)
 
@@ -175,8 +176,31 @@ class MainLayout(MDScreen):
             math_text = integral.get_latex_integral()
         self.ids.formula_display.set_formula(math_text)
 
+    def show_error(self, text):
+        self.ids.error_msg.set_text_change_state(text)
+
+    def clear_result_output(self):
+        self.ids.calculate_box.set_label_text(["", ""])
+
+    def set_result_output(self, answer, exec_time):
+
+        answer = "Відповідь: " + str(answer)
+        exec_time = "Час виконання: " + str(exec_time) + " сек."
+
+        self.ids.calculate_box.set_label_text([answer, exec_time])
+
+    @staticmethod
+    def unlock_widget(widget):
+        widget.disabled = False
+
+
+class SMethodsApp(MDApp):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.main_layout = MainLayout()
+
     def call_integrator(self, integral, n, **kwargs):
-        method = self.METHOD_VALUES[self.current_method_id]
+        method = self.main_layout.METHOD_VALUES[self.main_layout.current_method_id]
         method_signature = inspect.signature(method)
 
         if 'n' in method_signature.parameters:
@@ -189,7 +213,7 @@ class MainLayout(MDScreen):
             result = method(*args, **kwargs)
             end_time = time.time()
         except NotANumberError:
-            self.show_error("Відповідь не число, перевірьте данні!")
+            self.main_layout.show_error("Відповідь не число, перевірьте данні!")
             return None
 
         exec_time = end_time - start_time
@@ -197,10 +221,11 @@ class MainLayout(MDScreen):
         return result, exec_time
 
     def get_integral_value(self):
-        params = self.get_integral_params()
+        self.main_layout.clear_result_output()
+        params = self.main_layout.get_integral_params()
 
         if params is None:
-            self.show_error("Будь ласка, правильно заповніть поля!")
+            self.main_layout.show_error("Будь ласка, правильно заповніть поля!")
             return
 
         limits, integral_params, n, extra_integral_params = params
@@ -212,39 +237,16 @@ class MainLayout(MDScreen):
         try:
             integral = Integral(a, b, integrand, integral_mlt)
         except ComplexInfError:
-            self.show_error("Комплексна нескінченність, перевірьте данні!")
+            self.main_layout.show_error("Комплексна нескінченність, перевірьте данні!")
             return
 
         result, exec_time = self.call_integrator(integral, n, **extra_integral_params)
 
-        self.update_formula_display(integral)
+        self.main_layout.update_formula_display(integral)
         if result is not None:
             result = round(result, config['ROUND_PRECISION'])
             exec_time = round(exec_time, config['EXEC_TIME_PRECISION'])
-            self.set_result_output(result, exec_time)
-
-    def show_error(self, text):
-        self.ids.error_msg.set_text_change_state(text)
-
-    def set_result_output(self, answer, exec_time):
-
-        answer = "Відповідь: " + str(answer)
-        exec_time = "Час виконання: " + str(exec_time) + " сек."
-
-        self.ids.calculate_box.set_label_text([answer, exec_time])
-
-    def clear_result_output(self):
-        self.ids.calculate_box.set_label_text(["", ""])
-
-    @staticmethod
-    def unlock_widget(widget):
-        widget.disabled = False
-
-
-class SMethodsApp(MDApp):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.main_layout = MainLayout()
+            self.main_layout.set_result_output(result, exec_time)
 
     def switch_theme_style(self):
         self.theme_cls.theme_style = (
